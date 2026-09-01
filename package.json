@@ -2,7 +2,7 @@
   "name": "code-time-machine",
   "displayName": "Code Time Machine — Visual Git History",
   "description": "Travel through a file's Git history: layered revisions, synchronized line mapping and continuous navigation.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "adtv",
   "license": "MIT",
   "private": true,
@@ -43,7 +43,7 @@
         "command": "codeTimeMachine.openFileHistory",
         "title": "Open File History",
         "category": "Visual Git History",
-        "icon": "$(history)"
+        "icon": "$(versions)"
       },
       {
         "command": "codeTimeMachine.previousRevision",

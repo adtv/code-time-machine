@@ -22,7 +22,7 @@ export function Toolbar() {
   return (
     <header class="ctm-toolbar">
       <div class="ctm-toolbar-file" title={info?.relPath ?? ''}>
-        <span class="codicon codicon-history" aria-hidden="true" />
+        <span class="codicon codicon-versions" aria-hidden="true" />
         <span class="ctm-toolbar-name">{info?.fileName ?? ''}</span>
         {info?.repoName ? <span class="ctm-toolbar-repo">{info.repoName}</span> : null}
       </div>

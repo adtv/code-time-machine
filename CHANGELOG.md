@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1 — 2026-09-01
+
+- Distinctive launch icon: `$(versions)` (stacked revisions) instead of `$(history)`, which
+  collided visually with other Git history extensions in the editor title bar.
+
 ## 0.2.0 — 2026-09-01
 
 - New launch point: right-click on an editor tab (editor title context menu).
