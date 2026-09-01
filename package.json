@@ -238,7 +238,7 @@
     "pretest:extension": "node esbuild.mjs --tests && node scripts/prepare-extension-fixtures.mjs",
     "test:extension": "vscode-test",
     "check": "npm run lint && npm run typecheck && npm test && npm run build",
-    "package": "npm run build:prod && vsce package --no-dependencies --allow-missing-repository",
+    "package": "vsce package --no-dependencies --allow-missing-repository",
     "demo-repo": "node scripts/make-demo-repo.mjs"
   },
   "devDependencies": {

@@ -98,8 +98,8 @@ npm run package        # produces code-time-machine-<version>.vsix
 npm run demo-repo -- ../code-time-machine-demo   # 20-commit demo repository
 ```
 
-Documentation: [Architecture](docs/ARCHITECTURE.md) · [Line mapping](docs/LINE_MAPPING.md) ·
-[Testing](docs/TESTING.md) · [Performance](docs/PERFORMANCE.md) · [Roadmap](docs/ROADMAP.md).
+Documentation lives in `docs/`: `ARCHITECTURE.md`, `LINE_MAPPING.md`, `TESTING.md`,
+`PERFORMANCE.md`, `ROADMAP.md`.
 
 ## License
 

@@ -101,19 +101,32 @@ export async function connectWorkbench(port: string): Promise<CdpSession> {
 /**
  * Connects to our webview's frame. VS Code hosts webviews in an out-of-process iframe whose URL
  * carries `extensionId=<publisher.name>`; inside it, the content lives in an iframe with id
- * "active-frame".
+ * "active-frame". Frames of recently closed panels may still be listed, so every candidate is
+ * probed with `accept` (a JS expression evaluated in the frame that must return true).
  */
-export async function connectWebview(port: string, extensionId: string): Promise<CdpSession> {
+export async function connectWebview(
+  port: string,
+  extensionId: string,
+  accept: string,
+): Promise<CdpSession> {
   const targets = await listTargets(port);
-  const frame = targets.find(
+  const candidates = targets.filter(
     (t) => t.type === 'iframe' && t.url.includes(`extensionId=${extensionId}`),
   );
-  if (!frame) {
-    throw new Error(
-      `webview target not found among: ${targets.map((t) => `${t.type}:${t.url}`).join(' | ')}`,
-    );
+  for (const candidate of candidates) {
+    const session = await CdpSession.connect(candidate);
+    try {
+      if ((await session.evaluate<boolean>(accept)) === true) {
+        return session;
+      }
+    } catch {
+      // frame not ready or gone; try the next one
+    }
+    session.close();
   }
-  return CdpSession.connect(frame);
+  throw new Error(
+    `no accepted webview among ${candidates.length} candidate(s): ${targets.map((t) => `${t.type}:${t.url.slice(0, 80)}`).join(' | ')}`,
+  );
 }
 
 /** JS prelude that resolves the document of our webview content (inner frame if present). */

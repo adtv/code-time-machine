@@ -114,7 +114,11 @@ const CARDS_SCRIPT = `(() => {
       '[visual] targets:',
       targets.map((t) => `${t.type} ${t.url.slice(0, 90)}`).join('\n  '),
     );
-    webview = await connectWebview(cdpPort, 'adtv.code-time-machine');
+    webview = await connectWebview(
+      cdpPort,
+      'adtv.code-time-machine',
+      `(() => { const doc = ${WEBVIEW_DOC}; const name = doc.querySelector('.ctm-toolbar-name'); return !!name && name.textContent === 'UserService.ts' && !!doc.querySelector('.ctm-card[data-slot="0"]'); })()`,
+    );
     const cards = await webview.evaluate<CardInfo[]>(CARDS_SCRIPT);
     console.log('[visual] cards:', JSON.stringify(cards, null, 1));
     const active = cards.find((c) => c.slot === '0');

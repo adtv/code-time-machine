@@ -9,7 +9,7 @@ out/**
 node_modules/**
 coverage/**
 *.vsix
-*.map
+**/*.map
 .gitignore
 .prettierrc
 .prettierignore

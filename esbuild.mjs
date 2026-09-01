@@ -1,7 +1,7 @@
 // Build script: bundles the extension host (CommonJS/Node), the webview (IIFE/browser)
 // and, on demand, the VS Code extension tests. Run with --watch, --production or --tests.
 import * as esbuild from 'esbuild';
-import { cp, mkdir } from 'node:fs/promises';
+import { cp, mkdir, rm } from 'node:fs/promises';
 import { glob } from 'node:fs/promises';
 
 const args = new Set(process.argv.slice(2));
@@ -90,6 +90,10 @@ async function main() {
   if (testsOnly) {
     await esbuild.build(await extensionTestOptions());
     return;
+  }
+  if (production) {
+    // Never ship stale artefacts (e.g. source maps from a development build).
+    await rm('dist', { recursive: true, force: true });
   }
   await copyStaticAssets();
   if (watch) {
