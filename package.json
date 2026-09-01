@@ -187,6 +187,11 @@
           "default": true,
           "description": "Show lines removed by the active revision as faded ghost lines."
         },
+        "visualGitHistory.showMinimap": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show a minimap on the active revision (click or drag to scroll; added and removed lines are tinted)."
+        },
         "visualGitHistory.followRenames": {
           "type": "boolean",
           "default": true,

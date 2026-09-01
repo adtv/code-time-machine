@@ -22,6 +22,7 @@ export class CodeView {
   private gutterWidth = 3;
   /** scrollTop we set programmatically; a scroll event landing there is not a user scroll. */
   private expectedTop = Number.NaN;
+  private readonly scrollListeners = new Set<() => void>();
 
   constructor(
     container: HTMLElement,
@@ -53,6 +54,33 @@ export class CodeView {
 
   get rowCount(): number {
     return this.model.rows.length;
+  }
+
+  get scrollTop(): number {
+    return this.root.scrollTop;
+  }
+
+  get viewportHeight(): number {
+    return this.root.clientHeight;
+  }
+
+  get rows(): readonly Row[] {
+    return this.model.rows;
+  }
+
+  /** Notified on every scroll (user or programmatic). */
+  subscribeScroll(listener: () => void): () => void {
+    this.scrollListeners.add(listener);
+    return () => this.scrollListeners.delete(listener);
+  }
+
+  /** Scrolls like the user would (participates in synchronisation). */
+  scrollTo(top: number): void {
+    const max = Math.max(
+      0,
+      this.model.rows.length * this.options.rowHeight - this.root.clientHeight,
+    );
+    this.root.scrollTop = Math.max(0, Math.min(max, top));
   }
 
   /** Row index of a content line (or -1). */
@@ -153,6 +181,9 @@ export class CodeView {
     }
     if (!programmatic) {
       this.options.onUserScroll?.(this);
+    }
+    for (const listener of this.scrollListeners) {
+      listener();
     }
   };
 

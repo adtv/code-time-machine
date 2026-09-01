@@ -30,13 +30,17 @@ Everything is read-only.
    <kbd>⟲</kbd>, editor/explorer context menu, or <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>H</kbd>).
 3. Travel:
 
-| Action                        | Input                                                                                                                                                                             |
-| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Older / newer revision        | <kbd>Alt</kbd>+wheel · <kbd>J</kbd> / <kbd>K</kbd> · <kbd>PageDown</kbd> / <kbd>PageUp</kbd> · <kbd>Alt</kbd>+<kbd>↓</kbd> / <kbd>↑</kbd> · toolbar arrows · click a peeking card |
-| Jump                          | click the timeline · **Go to Revision…** command · <kbd>Alt</kbd>+<kbd>Home</kbd> / <kbd>End</kbd>                                                                                |
-| Scroll the file               | plain wheel / trackpad — neighbouring revisions follow the same logical lines                                                                                                     |
-| Toggle ghost lines / timeline | toolbar buttons                                                                                                                                                                   |
-| Refresh                       | <kbd>R</kbd> or toolbar                                                                                                                                                           |
+| Action                                  | Input                                                                                                                                                                             |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Older / newer revision                  | <kbd>Alt</kbd>+wheel · <kbd>J</kbd> / <kbd>K</kbd> · <kbd>PageDown</kbd> / <kbd>PageUp</kbd> · <kbd>Alt</kbd>+<kbd>↓</kbd> / <kbd>↑</kbd> · toolbar arrows · click a peeking card |
+| Jump                                    | click the timeline · **Go to Revision…** command · <kbd>Alt</kbd>+<kbd>Home</kbd> / <kbd>End</kbd>                                                                                |
+| Scroll the file                         | plain wheel / trackpad — neighbouring revisions follow the same logical lines                                                                                                     |
+| Toggle ghost lines / minimap / timeline | toolbar buttons                                                                                                                                                                   |
+| Refresh                                 | <kbd>R</kbd> or toolbar                                                                                                                                                           |
+
+The active card has a **minimap** on its right edge: a scaled picture of the revision where added
+lines are tinted green and removed (ghost) lines red, so you can see _where_ a commit changed the
+file; click or drag it to scroll.
 
 Header actions on the active card: copy hash (click the hash chip), copy message, open the
 revision in a read-only editor, compare with the working tree (VS Code diff editor).
@@ -58,17 +62,18 @@ followed; merge commits are shown against their first parent and labelled.
 
 ## Settings
 
-| Setting                               | Default | Meaning                                                            |
-| ------------------------------------- | ------- | ------------------------------------------------------------------ |
-| `visualGitHistory.maxCommits`         | 500     | Maximum commits loaded (in growing pages)                          |
-| `visualGitHistory.preloadRevisions`   | 3       | Revisions preloaded on each side of the active one                 |
-| `visualGitHistory.animationDuration`  | 200     | Transition duration in ms (0 disables; reduced motion is honoured) |
-| `visualGitHistory.showGhostLines`     | true    | Show removed lines as ghosts                                       |
-| `visualGitHistory.followRenames`      | true    | Follow the file across renames                                     |
-| `visualGitHistory.ignoreWhitespace`   | false   | Ignore whitespace-only changes when diffing/mapping                |
-| `visualGitHistory.maxFileSizeKB`      | 2048    | Larger revisions are not rendered                                  |
-| `visualGitHistory.maxRenderedLines`   | 8000    | Above this, simplified mode (no highlighting, no animation)        |
-| `visualGitHistory.timeTravelModifier` | `alt`   | Modifier for wheel time travel (`alt`, `ctrl`, `shift`)            |
+| Setting                               | Default | Meaning                                                                                     |
+| ------------------------------------- | ------- | ------------------------------------------------------------------------------------------- |
+| `visualGitHistory.maxCommits`         | 500     | Maximum commits loaded (in growing pages)                                                   |
+| `visualGitHistory.preloadRevisions`   | 3       | Revisions preloaded on each side of the active one                                          |
+| `visualGitHistory.animationDuration`  | 200     | Transition duration in ms (0 disables; reduced motion is honoured)                          |
+| `visualGitHistory.showGhostLines`     | true    | Show removed lines as ghosts                                                                |
+| `visualGitHistory.showMinimap`        | true    | Minimap on the active revision (click/drag/wheel to scroll; added and removed lines tinted) |
+| `visualGitHistory.followRenames`      | true    | Follow the file across renames                                                              |
+| `visualGitHistory.ignoreWhitespace`   | false   | Ignore whitespace-only changes when diffing/mapping                                         |
+| `visualGitHistory.maxFileSizeKB`      | 2048    | Larger revisions are not rendered                                                           |
+| `visualGitHistory.maxRenderedLines`   | 8000    | Above this, simplified mode (no highlighting, no animation)                                 |
+| `visualGitHistory.timeTravelModifier` | `alt`   | Modifier for wheel time travel (`alt`, `ctrl`, `shift`)                                     |
 
 ## Privacy
 

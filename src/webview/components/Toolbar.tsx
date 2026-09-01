@@ -6,8 +6,10 @@ import {
   navigate,
   revisions,
   showGhostLines,
+  showMinimap,
   timelineVisible,
   toggleGhostLines,
+  toggleMinimap,
   toggleTimeline,
 } from '../state/store';
 
@@ -62,6 +64,16 @@ export function Toolbar() {
           onClick={() => toggleGhostLines()}
         >
           <span class="codicon codicon-diff-removed" aria-hidden="true" />
+        </button>
+        <button
+          type="button"
+          class={`ctm-icon-button ${showMinimap.value ? 'ctm-icon-button-on' : ''}`}
+          title={showMinimap.value ? 'Hide minimap' : 'Show minimap'}
+          aria-label="Toggle minimap"
+          aria-pressed={showMinimap.value}
+          onClick={() => toggleMinimap()}
+        >
+          <span class="codicon codicon-map" aria-hidden="true" />
         </button>
         <button
           type="button"

@@ -192,6 +192,32 @@ const CARDS_SCRIPT = `(() => {
     await sleep(900);
     await shot('04-rename-area');
 
+    // Minimap: present on the active card only; clicking near its bottom scrolls the code.
+    // Use the working-tree revision (68 lines) so the code area is actually scrollable.
+    await webview.evaluate(
+      `(() => { const doc = ${WEBVIEW_DOC}; doc.querySelector('.ctm-timeline-item[data-index="0"]').click(); return true; })()`,
+    );
+    await sleep(900);
+    await shot('04b-minimap');
+    const minimapInfo = await webview.evaluate<string>(
+      `(() => { const doc = ${WEBVIEW_DOC}; const active = doc.querySelector('.ctm-card[data-slot="0"]'); const canvas = active.querySelector('.ctm-minimap'); const others = doc.querySelectorAll('.ctm-card:not([data-slot="0"]) .ctm-minimap').length; if (!canvas) return JSON.stringify({ canvas: false, others }); const r = canvas.getBoundingClientRect(); const code = active.querySelector('.ctm-code'); const before = code.scrollTop; const W = doc.defaultView; canvas.dispatchEvent(new W.MouseEvent('mousedown', { clientX: r.left + 10, clientY: r.bottom - 5, button: 0, bubbles: true })); W.dispatchEvent(new W.MouseEvent('mouseup', { bubbles: true })); return JSON.stringify({ canvas: true, width: r.width, height: r.height, others, rows: code.querySelectorAll('.ctm-row').length, scrollHeight: code.scrollHeight, clientHeight: code.clientHeight, before, after: code.scrollTop }); })()`,
+    );
+    console.log(`[visual] minimap: ${minimapInfo}`);
+    const parsedMinimap = JSON.parse(minimapInfo) as {
+      canvas: boolean;
+      others: number;
+      before?: number;
+      after?: number;
+    };
+    assert.equal(parsedMinimap.canvas, true, 'active card has a minimap');
+    assert.equal(parsedMinimap.others, 0, 'background cards have no minimap');
+    assert.ok(
+      (parsedMinimap.after ?? 0) > (parsedMinimap.before ?? 0),
+      'clicking the minimap scrolled the code',
+    );
+    await sleep(400);
+    await shot('04c-minimap-clicked');
+
     // Responsive check: emulate narrow windows and capture the deck + timeline.
     const workbench = await connectWorkbench(cdpPort);
     try {

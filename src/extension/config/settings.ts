@@ -6,6 +6,7 @@ export interface Settings {
   preloadRevisions: number;
   animationDuration: number;
   showGhostLines: boolean;
+  showMinimap: boolean;
   followRenames: boolean;
   ignoreWhitespace: boolean;
   maxFileSizeBytes: number;
@@ -18,6 +19,7 @@ export const DEFAULT_SETTINGS: Settings = {
   preloadRevisions: 3,
   animationDuration: 200,
   showGhostLines: true,
+  showMinimap: true,
   followRenames: true,
   ignoreWhitespace: false,
   maxFileSizeBytes: 2048 * 1024,
@@ -58,6 +60,7 @@ export function readSettings(reader: SettingsReader): Settings {
       1000,
     ),
     showGhostLines: bool('showGhostLines', DEFAULT_SETTINGS.showGhostLines),
+    showMinimap: bool('showMinimap', DEFAULT_SETTINGS.showMinimap),
     followRenames: bool('followRenames', DEFAULT_SETTINGS.followRenames),
     ignoreWhitespace: bool('ignoreWhitespace', DEFAULT_SETTINGS.ignoreWhitespace),
     maxFileSizeBytes: clampInt(reader.get('maxFileSizeKB'), 2048, 64, 1_048_576) * 1024,
@@ -78,6 +81,7 @@ export function toWebviewConfig(settings: Settings): WebviewConfig {
   return {
     animationDuration: settings.animationDuration,
     showGhostLines: settings.showGhostLines,
+    showMinimap: settings.showMinimap,
     timeTravelModifier: settings.timeTravelModifier,
     preloadRevisions: settings.preloadRevisions,
     maxRenderedLines: settings.maxRenderedLines,

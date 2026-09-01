@@ -14,6 +14,7 @@ export type TimeTravelModifier = 'alt' | 'ctrl' | 'shift';
 export interface WebviewConfig {
   animationDuration: number;
   showGhostLines: boolean;
+  showMinimap: boolean;
   timeTravelModifier: TimeTravelModifier;
   preloadRevisions: number;
   maxRenderedLines: number;

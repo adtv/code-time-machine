@@ -912,3 +912,34 @@ body.vscode-reduce-motion .ctm-deck .ctm-card {
     display: none;
   }
 }
+
+/* ---- minimap ------------------------------------------------------------------------------ */
+.ctm-code-wrap {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+}
+
+.ctm-code-wrap > .ctm-code {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ctm-minimap {
+  flex: 0 0 72px;
+  width: 72px;
+  height: 100%;
+  display: block;
+  border-left: 1px solid var(--ctm-border);
+  background: var(--vscode-editor-background);
+  cursor: pointer;
+  user-select: none;
+}
+
+@container (max-width: 560px) {
+  .ctm-minimap {
+    display: none;
+  }
+}

@@ -3,9 +3,10 @@ import type { RevisionView } from '../../shared/messages/protocol';
 import type { RevisionMeta } from '../../shared/models/revision';
 import { scrollSync } from '../interaction/sync';
 import { CodeView } from '../rendering/codeView';
+import { Minimap, readMinimapColors } from '../rendering/minimap';
 import { registerCodeView } from '../rendering/registry';
 import { buildRows } from '../rendering/rows';
-import { showGhostLines } from '../state/store';
+import { showGhostLines, showMinimap, theme } from '../state/store';
 import { CommitActions } from './CommitActions';
 import { CommitHeader, formatDate } from './CommitHeader';
 import { slotFor } from './RevisionDeck';
@@ -124,10 +125,14 @@ function CardBody({
 
 function CodeViewHost({ view, active }: { view: RevisionView; active: boolean }) {
   const container = useRef<HTMLDivElement>(null);
+  const canvas = useRef<HTMLCanvasElement>(null);
   const codeView = useRef<CodeView>();
+  const minimap = useRef<Minimap>();
   const isActive = useRef(active);
   isActive.current = active;
   const showGhost = showGhostLines.value;
+  const withMinimap = active && showMinimap.value;
+  const currentTheme = theme.value;
 
   useEffect(() => {
     const el = container.current;
@@ -153,18 +158,45 @@ function CodeViewHost({ view, active }: { view: RevisionView; active: boolean })
   }, [view.id]);
 
   useEffect(() => {
-    codeView.current?.setModel(buildRows(view, showGhost));
+    const model = buildRows(view, showGhost);
+    codeView.current?.setModel(model);
+    minimap.current?.setModel(model);
     scrollSync.onCardReady(view.id);
   }, [view, showGhost]);
 
+  // The minimap exists only on the active card (background cards are dimmed and non-interactive).
+  useEffect(() => {
+    const el = canvas.current;
+    const code = codeView.current;
+    if (!withMinimap || !el || !code) {
+      return;
+    }
+    const instance = new Minimap(el, code, () => readMinimapColors(el));
+    instance.setModel(buildRows(view, showGhost));
+    minimap.current = instance;
+    return () => {
+      instance.dispose();
+      minimap.current = undefined;
+    };
+  }, [withMinimap, view.id]);
+
+  useEffect(() => {
+    // Theme changes swap the palette variables; repaint on the next frame so CSS has applied.
+    const id = requestAnimationFrame(() => minimap.current?.refreshTheme());
+    return () => cancelAnimationFrame(id);
+  }, [currentTheme]);
+
   return (
-    <div
-      ref={container}
-      class="ctm-code"
-      tabIndex={active ? 0 : -1}
-      role="table"
-      aria-label="Source code"
-    />
+    <div class="ctm-code-wrap">
+      <div
+        ref={container}
+        class="ctm-code"
+        tabIndex={active ? 0 : -1}
+        role="table"
+        aria-label="Source code"
+      />
+      {withMinimap ? <canvas ref={canvas} class="ctm-minimap" aria-hidden="true" /> : null}
+    </div>
   );
 }
 

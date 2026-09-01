@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Minimap on the active revision card (canvas): scaled code picture with token colours, added and
+  removed lines tinted, slider for the visible region; click, drag and wheel to scroll. Setting
+  `visualGitHistory.showMinimap` and a toolbar toggle.
+- Responsive layout: header/footer truncation with container queries, compact timeline with short
+  sticky day labels on narrow panels; sticky day headers no longer let items show above them.
+
 ## 0.1.0 — 2026-09-01
 
 Initial MVP.

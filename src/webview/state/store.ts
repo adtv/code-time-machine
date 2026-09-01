@@ -22,6 +22,7 @@ export const busy = signal<{ busy: boolean; message?: string }>({ busy: true });
 export const config = signal<WebviewConfig>({
   animationDuration: 200,
   showGhostLines: true,
+  showMinimap: true,
   timeTravelModifier: 'alt',
   preloadRevisions: 3,
   maxRenderedLines: 8000,
@@ -39,6 +40,13 @@ export function toggleTimeline(): void {
 
 export function toggleGhostLines(): void {
   ghostOverride.value = !showGhostLines.value;
+}
+
+export const minimapOverride = signal<boolean | undefined>(undefined);
+export const showMinimap = computed(() => minimapOverride.value ?? config.value.showMinimap);
+
+export function toggleMinimap(): void {
+  minimapOverride.value = !showMinimap.value;
 }
 
 export const activeRevision = computed(() => revisions.value[activeIndex.value]);

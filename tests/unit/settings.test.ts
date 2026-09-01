@@ -47,6 +47,7 @@ describe('readSettings', () => {
     expect(toWebviewConfig(s)).toEqual({
       animationDuration: 200,
       showGhostLines: true,
+      showMinimap: true,
       timeTravelModifier: 'ctrl',
       preloadRevisions: 3,
       maxRenderedLines: 8000,
