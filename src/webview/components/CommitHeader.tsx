@@ -1,7 +1,6 @@
+import type { ComponentChildren } from 'preact';
 import type { RevisionMeta } from '../../shared/models/revision';
 import { postToExtension } from '../state/messaging';
-
-import type { ComponentChildren } from 'preact';
 
 export function CommitHeader({
   revision,
@@ -39,22 +38,24 @@ export function CommitHeader({
         {actions}
       </div>
       <div class="ctm-card-line2">
-        <span class="ctm-author">{revision.author.name}</span>
+        <span class="ctm-author" title={revision.author.name}>
+          {revision.author.name}
+        </span>
         <span class="ctm-dot" aria-hidden="true">
           ·
         </span>
-        <time dateTime={new Date(revision.authorDate).toISOString()}>
+        <time class="ctm-date" dateTime={new Date(revision.authorDate).toISOString()}>
           {formatDate(revision.authorDate)}
         </time>
         {revision.path ? (
-          <>
+          <span class="ctm-path-group">
             <span class="ctm-dot" aria-hidden="true">
               ·
             </span>
             <span class="ctm-path" title={revision.path}>
               {revision.path}
             </span>
-          </>
+          </span>
         ) : null}
       </div>
     </header>

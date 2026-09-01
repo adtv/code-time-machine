@@ -191,6 +191,45 @@ const CARDS_SCRIPT = `(() => {
     await api.waitForIdle(uri);
     await sleep(900);
     await shot('04-rename-area');
+
+    // Responsive check: emulate narrow windows and capture the deck + timeline.
+    const workbench = await connectWorkbench(cdpPort);
+    try {
+      for (const [name, width] of [
+        ['05-narrow', 620],
+        ['06-very-narrow', 420],
+      ] as const) {
+        await workbench.send('Emulation.setDeviceMetricsOverride', {
+          width,
+          height: 900,
+          deviceScaleFactor: 1,
+          mobile: false,
+        });
+        await sleep(1200);
+        const cards = await webview.evaluate<CardInfo[]>(CARDS_SCRIPT);
+        const active = cards.find((c) => c.slot === '0');
+        console.log(
+          `[visual] ${name}: card ${active ? (active.rect.right - active.rect.left).toFixed(0) : '?'}px wide, header ${active ? (active.header.bottom - active.header.top).toFixed(1) : '?'}px tall`,
+        );
+        writeFileSync(path.join(outDir, `${name}.png`), await workbench.screenshot());
+        console.log(`[visual] saved ${name}.png`);
+      }
+      await workbench.send('Emulation.clearDeviceMetricsOverride');
+      await sleep(800);
+      // Sticky day headers must paint above the dots: scroll the list so items pass under one.
+      await webview.evaluate(
+        `(() => { const doc = ${WEBVIEW_DOC}; const list = doc.querySelector('.ctm-timeline-list'); list.scrollTop = 130; return list.scrollTop; })()`,
+      );
+      await sleep(400);
+      const sticky = await webview.evaluate<string>(
+        `(() => { const doc = ${WEBVIEW_DOC}; const list = doc.querySelector('.ctm-timeline-list'); const lr = list.getBoundingClientRect(); const days = [...doc.querySelectorAll('.ctm-timeline-day')]; const items = [...doc.querySelectorAll('.ctm-timeline-item')]; const near = (el) => { const r = el.getBoundingClientRect(); return { top: +r.top.toFixed(1), bottom: +r.bottom.toFixed(1), z: getComputedStyle(el).zIndex, pos: getComputedStyle(el).position, text: (el.textContent || '').trim().slice(0, 28) }; }; return JSON.stringify({ list: { top: +lr.top.toFixed(1), padTop: getComputedStyle(list).paddingTop }, days: days.slice(0, 3).map(near), items: items.slice(0, 4).map(near) }); })()`,
+      );
+      console.log(`[visual] sticky geometry: ${sticky}`);
+      writeFileSync(path.join(outDir, '07-timeline-scrolled.png'), await workbench.screenshot());
+      console.log('[visual] saved 07-timeline-scrolled.png');
+    } finally {
+      workbench.close();
+    }
     const hold = Number(process.env['CTM_VISUAL_HOLD'] ?? '0');
     if (hold > 0) {
       await sleep(hold);

@@ -51,6 +51,18 @@ export function dayLabel(timestamp: number, now = Date.now()): string {
   });
 }
 
+/** Short variant for the compact timeline ("Today", "Yest.", "Dec 4"). */
+export function dayLabelShort(timestamp: number, now = Date.now()): string {
+  const full = dayLabel(timestamp, now);
+  if (full === 'Today') {
+    return 'Today';
+  }
+  if (full === 'Yesterday') {
+    return 'Yest.';
+  }
+  return new Date(timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+}
+
 export function tooltipFor(revision: RevisionMeta): string {
   const id = revision.kind === 'workingTree' ? 'Working Tree' : revision.id.slice(0, 8);
   const stats = revision.stats
@@ -65,18 +77,21 @@ export function tooltipFor(revision: RevisionMeta): string {
 
 interface Group {
   label: string;
+  shortLabel: string;
   items: { revision: RevisionMeta; index: number }[];
 }
 
 export function groupByDay(list: readonly RevisionMeta[], now = Date.now()): Group[] {
   const groups: Group[] = [];
   list.forEach((revision, index) => {
-    const label = revision.kind === 'workingTree' ? 'Now' : dayLabel(revision.authorDate, now);
+    const isWorkingTree = revision.kind === 'workingTree';
+    const label = isWorkingTree ? 'Now' : dayLabel(revision.authorDate, now);
+    const shortLabel = isWorkingTree ? 'Now' : dayLabelShort(revision.authorDate, now);
     const last = groups[groups.length - 1];
     if (last?.label === label) {
       last.items.push({ revision, index });
     } else {
-      groups.push({ label, items: [{ revision, index }] });
+      groups.push({ label, shortLabel, items: [{ revision, index }] });
     }
   });
   return groups;
@@ -136,8 +151,9 @@ export function Timeline() {
       >
         {groups.map((group) => (
           <li key={`${group.label}-${group.items[0]?.index ?? 0}`} class="ctm-timeline-group">
-            <div class="ctm-timeline-day" aria-hidden="true">
-              {group.label}
+            <div class="ctm-timeline-day" aria-hidden="true" title={group.label}>
+              <span class="ctm-timeline-day-full">{group.label}</span>
+              <span class="ctm-timeline-day-short">{group.shortLabel}</span>
             </div>
             <ul class="ctm-timeline-items" role="presentation">
               {group.items.map(({ revision, index }) => (

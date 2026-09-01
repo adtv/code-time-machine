@@ -167,9 +167,24 @@ button {
 .ctm-card-line1,
 .ctm-card-line2 {
   display: flex;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 8px;
   min-width: 0;
+  overflow: hidden;
+}
+
+.ctm-card-line1 > *,
+.ctm-card-line2 > * {
+  min-width: 0;
+}
+
+.ctm-hash,
+.ctm-badges,
+.ctm-stats,
+.ctm-actions,
+.ctm-dot {
+  flex: 0 0 auto;
 }
 
 .ctm-card-line2 {
@@ -235,10 +250,38 @@ button {
   color: var(--ctm-removed-fg);
 }
 
+.ctm-path-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .ctm-path {
+  flex: 1 1 auto;
+  min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  /* Ellipsis on the left so the file name (the informative end) stays visible. */
+  direction: rtl;
+  text-align: left;
+  unicode-bidi: plaintext;
+}
+
+.ctm-author {
+  flex: 0 1 auto;
+  min-width: 3ch;
+  max-width: 45%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ctm-date {
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .ctm-card-message {
@@ -511,6 +554,11 @@ body.vscode-high-contrast-light .ctm-row-ghost {
   min-width: 0;
   white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ctm-footer-status > * {
+  flex: 0 0 auto;
 }
 
 .ctm-footer-line {
@@ -584,10 +632,18 @@ body.vscode-reduce-motion .ctm-deck .ctm-card {
 .ctm-timeline-list {
   list-style: none;
   margin: 0;
-  padding: 8px 0 16px;
+  /* No padding-top: sticky headers anchor to the scroller's content edge, so any padding would
+     leave a strip where scrolled items show above the floating day label. */
+  padding: 0 0 16px;
   overflow-y: auto;
   flex: 1 1 auto;
   outline: none;
+}
+
+.ctm-timeline-list::before {
+  content: '';
+  display: block;
+  height: 6px;
 }
 
 .ctm-timeline-list:focus-visible {
@@ -602,7 +658,7 @@ body.vscode-reduce-motion .ctm-deck .ctm-card {
 .ctm-timeline-day {
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 3; /* above the rail and the positioned dots */
   padding: 6px 12px 4px 14px;
   font-size: 0.8em;
   text-transform: uppercase;
@@ -761,12 +817,98 @@ body.vscode-reduce-motion .ctm-deck .ctm-card {
   border-color: var(--ctm-border);
 }
 
+/* ---- responsive --------------------------------------------------------------------------- */
+.ctm-card {
+  container-type: inline-size;
+}
+
+/* Narrow cards: drop the least informative header parts first. */
+@container (max-width: 680px) {
+  .ctm-path-group {
+    display: none;
+  }
+}
+
+@container (max-width: 540px) {
+  .ctm-badges {
+    display: none;
+  }
+  .ctm-author {
+    max-width: 60%;
+  }
+}
+
+@container (max-width: 440px) {
+  /* The subject matters more than the numbers (which the footer repeats). */
+  .ctm-card-line1 .ctm-stats,
+  .ctm-actions .ctm-icon-button[aria-label='Copy commit message'] {
+    display: none;
+  }
+  .ctm-subject {
+    min-width: 6ch;
+  }
+}
+
+.ctm-timeline-day-short {
+  display: none;
+}
+
+/* Medium panels: keep the subject, drop hash/author. */
+@media (max-width: 1000px) {
+  .ctm-timeline {
+    flex-basis: 200px;
+  }
+  .ctm-timeline-meta {
+    display: none;
+  }
+}
+
+/* Narrow panels: compact rail with short sticky day labels; give the deck more room. */
 @media (max-width: 760px) {
   .ctm-timeline {
-    flex-basis: 56px;
+    flex-basis: 68px;
   }
   .ctm-timeline-text,
+  .ctm-timeline-day-full {
+    display: none;
+  }
+  .ctm-timeline-day-short {
+    display: block;
+  }
   .ctm-timeline-day {
+    padding: 4px 2px 2px;
+    font-size: 0.68em;
+    letter-spacing: 0;
+    text-transform: none;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ctm-timeline-items::before {
+    left: calc(50% - 0.5px);
+  }
+  .ctm-timeline-item {
+    justify-content: center;
+    padding: 5px 0;
+  }
+  .ctm-toolbar-repo {
+    display: none;
+  }
+  .ctm-deck .ctm-card {
+    left: 12px;
+    right: 12px;
+  }
+  .ctm-toolbar {
+    padding: 6px 8px;
+  }
+}
+
+@media (max-width: 520px) {
+  .ctm-toolbar-position {
+    min-width: 4em;
+  }
+  .ctm-toolbar-separator {
     display: none;
   }
 }
