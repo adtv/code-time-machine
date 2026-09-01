@@ -31,7 +31,9 @@ present on Ubuntu 24.04 desktop images.
 window, inspects the live webview DOM through the Chromium DevTools Protocol (VS Code is launched
 with `--remote-debugging-port`), **asserts scroll synchronisation numerically** (every card must
 be centred on the same logical line) and stores screenshots in `.vscode-test/shots`
-(`CTM_SHOT_DIR` to change). `CTM_THEME="Light Modern"` (or any theme name) selects the theme.
+(`CTM_SHOT_DIR` to change). `CTM_THEME="Light Modern"` (a theme _settings id_, e.g. `Dark Modern`,
+`Light Modern`) selects the theme through seeded user settings; the run logs the effective theme
+kind so a wrong id is visible.
 
 ## Smoke test (reproducible)
 
@@ -43,8 +45,9 @@ be centred on the same logical line) and stores screenshots in `.vscode-test/sho
    samples.
 4. Open the demo folder, open `src/services/UserService.ts`, run
    **Visual Git History: Open File History** (Ctrl+Alt+H, editor title icon or context menu).
-5. Check: Working Tree card in front, `c38bbb3…` peeking above… wait, newer above/older below: the
-   older cards peek below with their footer, the newer (if any) above with its header.
+5. Check: the Working Tree card is in front (uncommitted change), the older cards peek below
+   with their footer (hash · subject · author · date); when an older revision is active, the
+   newer one peeks above with its header.
 6. Travel: `J`/`K`, PageDown/PageUp, Alt+↑/↓, Alt+wheel, click a peeking card, click the
    timeline. Transition ≈200 ms (none with reduced motion).
 7. Scroll the active card: neighbours keep the same logical region (e.g. the `validate()`
@@ -56,12 +59,12 @@ be centred on the same logical line) and stores screenshots in `.vscode-test/sho
 
 ## Manual matrix
 
-| Area         | Cases                                                                                                       | Status (2026-09-01)                                                                                      |
-| ------------ | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| OS           | Windows (VS Code desktop), Linux/WSL (VS Code remote)                                                       | WSL: verified with the visual harness; Windows: pending user run                                         |
-| Theme        | Dark Modern, Light Modern, High Contrast                                                                    | Dark verified via screenshots; Light/HC verified via screenshots                                         |
-| Languages    | TypeScript, PHP, Python, JSON, plaintext                                                                    | TS/PHP/Python/JSON highlighted (integration tests); plaintext renders unhighlighted                      |
-| Repositories | 1 commit, 10 commits, 100 commits, rename, large file, uncommitted changes, multi-root                      | 1/8/21/100 commits, rename ×2, 3000-line file, working tree entry, multi-root covered by automated tests |
-| Edge cases   | binary, deleted file, merge commit, CRLF, empty repository, untracked file, staged new file, file too large | covered by integration tests + empty-state UI                                                            |
+| Area         | Cases                                                                                                       | Status (2026-09-01)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ------------ | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| OS           | Windows (VS Code desktop), Linux/WSL (VS Code remote)                                                       | WSL: verified with the visual harness; Windows: pending user run                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Theme        | Dark Modern, Light Modern, High Contrast                                                                    | Dark and Light Modern verified via harness screenshots (Dark+/Light+ palettes, VS Code colour tokens). **High Contrast: pending manual check** — the test instance keeps rendering the dark theme even with `workbench.colorTheme: "Default High Contrast"` and `window.autoDetectHighContrast: false`, so the harness could not capture it. The UI only uses `--vscode-*` tokens plus HC-specific outlines (`body.vscode-high-contrast`), and highlighting switches to the GitHub high-contrast palettes by theme kind. |
+| Languages    | TypeScript, PHP, Python, JSON, plaintext                                                                    | TS/PHP/Python/JSON highlighted (integration tests); plaintext renders unhighlighted                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Repositories | 1 commit, 10 commits, 100 commits, rename, large file, uncommitted changes, multi-root                      | 1/8/21/100 commits, rename ×2, 3000-line file, working tree entry, multi-root covered by automated tests                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Edge cases   | binary, deleted file, merge commit, CRLF, empty repository, untracked file, staged new file, file too large | covered by integration tests + empty-state UI                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 
 Items marked pending must be re-checked by a human before publishing to the Marketplace.
