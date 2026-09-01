@@ -203,6 +203,16 @@ const CARDS_SCRIPT = `(() => {
     );
     assert.match(navAfter.count ?? '', /^\d+\/\d+ changes?$/u, 'footer shows k/n changes');
     assert.notEqual(navAfter.scrollTop, navBefore.scrollTop, 'N moved the code to a change block');
+    // At the very bottom the counter must reach total/total.
+    await webview.evaluate(
+      `(() => { const doc = ${WEBVIEW_DOC}; const code = doc.querySelector('.ctm-card[data-slot="0"] .ctm-code'); code.scrollTop = code.scrollHeight; return code.scrollTop; })()`,
+    );
+    await sleep(400);
+    const navBottom = JSON.parse(await webview.evaluate<string>(readNav)) as {
+      count: string | null;
+    };
+    console.log(`[visual] change nav at bottom: ${JSON.stringify(navBottom)}`);
+    assert.match(navBottom.count ?? '', /^(\d+)\/\1 changes?$/u, 'counter reads N/N at the bottom');
     await shot('03c-change-nav');
     const afterNav = await webview.evaluate<CardInfo[]>(CARDS_SCRIPT);
     for (const card of afterNav) {

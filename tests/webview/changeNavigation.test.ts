@@ -3,7 +3,7 @@ import { diffLines } from '../../src/shared/diff/lineDiff';
 import { buildLineMap } from '../../src/shared/mapping/lineMap';
 import type { RevisionView } from '../../src/shared/messages/protocol';
 import {
-  nearestChangeIndex,
+  currentChangeIndex,
   nextChangeIndex,
   previousChangeIndex,
 } from '../../src/webview/interaction/changeNavigation';
@@ -84,11 +84,21 @@ describe('change navigation indices', () => {
     expect(previousChangeIndex([], 5)).toBe(-1);
   });
 
-  it('reports the nearest block', () => {
-    expect(nearestChangeIndex(blocks, 0)).toBe(0);
-    expect(nearestChangeIndex(blocks, 6)).toBe(0); // 6 is 2 away from block0 end (4), 2 away from block1 start → tie → first
-    expect(nearestChangeIndex(blocks, 7)).toBe(1);
-    expect(nearestChangeIndex(blocks, 30)).toBe(2);
-    expect(nearestChangeIndex([], 3)).toBe(-1);
+  it('tracks the current block by clamped scroll target (agrees with the jumps)', () => {
+    // 60 rows × 20px, viewport 400px → maxScroll 800. Blocks near both edges.
+    const edgeBlocks: ChangeBlock[] = [
+      { startRow: 2, rowCount: 2, added: 2, removed: 0 }, // target 60-200 → clamped 0
+      { startRow: 25, rowCount: 2, added: 1, removed: 1 }, // target 320
+      { startRow: 50, rowCount: 4, added: 4, removed: 0 }, // target 840 → clamped 800
+      { startRow: 58, rowCount: 2, added: 2, removed: 0 }, // target 990 → clamped 800
+    ];
+    const at = (scrollTop: number) => currentChangeIndex(edgeBlocks, 60, 20, 400, scrollTop);
+    expect(at(0)).toBe(0); // top of the file → first block (tie at the top edge)
+    expect(at(320)).toBe(1); // exactly centred on block 2
+    expect(at(800)).toBe(3); // bottom of the file → LAST block, even though it cannot be centred
+    expect(at(700)).toBe(2);
+    expect(currentChangeIndex([], 60, 20, 400, 0)).toBe(-1);
+    // A short file where nothing scrolls (maxScroll 0): first block wins.
+    expect(currentChangeIndex(edgeBlocks.slice(0, 2), 10, 20, 400, 0)).toBe(0);
   });
 });

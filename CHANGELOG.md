@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.2 — 2026-09-01
+
+- Change counter fix: the current block is now the one whose clamped scroll target is closest to
+  the scroll position (same maths as the jumps), so the footer reads N/N at the bottom of the
+  file and 1/N at the top — blocks in the first/last half viewport were previously unreachable
+  by the "nearest to centre" metric.
+
 ## 0.2.1 — 2026-09-01
 
 - Distinctive launch icon: `$(versions)` (stacked revisions) instead of `$(history)`, which

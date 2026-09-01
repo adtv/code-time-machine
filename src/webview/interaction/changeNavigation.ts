@@ -15,20 +15,49 @@ function blockEnd(block: ChangeBlock): number {
   return block.startRow + Math.max(1, block.rowCount) - 1;
 }
 
-/** Index of the block nearest to `centerRow` (ties → the first). */
-export function nearestChangeIndex(blocks: readonly ChangeBlock[], centerRow: number): number {
-  let best = -1;
+/** Scroll target (before clamping) that centres a block in the viewport. */
+function blockScrollTarget(block: ChangeBlock, rowHeight: number, viewportHeight: number): number {
+  const rows = Math.max(1, block.rowCount);
+  return block.startRow * rowHeight + (rows * rowHeight) / 2 - viewportHeight / 2;
+}
+
+/**
+ * Index of the block the view is currently "at": the one whose clamped scroll target is closest
+ * to the current scrollTop — the same maths the jumps use, so the counter always agrees with
+ * them. Blocks in the first/last half viewport can never reach the centre, hence the clamping;
+ * ties at the bottom edge resolve to the last block (N/N at the end of the file) and ties at the
+ * top edge to the first (1/N at the start).
+ */
+export function currentChangeIndex(
+  blocks: readonly ChangeBlock[],
+  rowCount: number,
+  rowHeight: number,
+  viewportHeight: number,
+  scrollTop: number,
+): number {
+  if (blocks.length === 0) {
+    return -1;
+  }
+  const maxScroll = Math.max(0, rowCount * rowHeight - viewportHeight);
+  const clamp = (value: number): number => Math.max(0, Math.min(maxScroll, value));
+  let best = 0;
   let bestDistance = Number.POSITIVE_INFINITY;
   blocks.forEach((block, i) => {
-    const distance =
-      centerRow < block.startRow
-        ? block.startRow - centerRow
-        : centerRow > blockEnd(block)
-          ? centerRow - blockEnd(block)
-          : 0;
-    if (distance < bestDistance) {
-      bestDistance = distance;
+    const target = clamp(blockScrollTarget(block, rowHeight, viewportHeight));
+    const distance = Math.abs(scrollTop - target);
+    if (distance < bestDistance - 0.5) {
       best = i;
+      bestDistance = distance;
+    } else if (
+      distance <= bestDistance + 0.5 &&
+      maxScroll > 0 &&
+      target >= maxScroll - 0.5 &&
+      scrollTop >= maxScroll - 0.5
+    ) {
+      // Only when actually resting at the bottom edge: among blocks clamped there, report the
+      // last one (N/N at the end of the file). Elsewhere, ties keep the earlier block.
+      best = i;
+      bestDistance = Math.min(bestDistance, distance);
     }
   });
   return best;
@@ -59,10 +88,7 @@ export function previousChangeIndex(blocks: readonly ChangeBlock[], centerRow: n
 
 /** Scroll so the block sits at the vertical centre (through the user-like scroll path → synced). */
 export function scrollToBlock(view: CodeView, block: ChangeBlock): void {
-  const rows = Math.max(1, block.rowCount);
-  const top =
-    block.startRow * view.rowHeight + (rows * view.rowHeight) / 2 - view.viewportHeight / 2;
-  view.scrollTo(top);
+  view.scrollTo(blockScrollTarget(block, view.rowHeight, view.viewportHeight));
 }
 
 export function refreshChangeNav(view: CodeView | undefined): void {
@@ -77,7 +103,14 @@ export function refreshChangeNav(view: CodeView | undefined): void {
   }
   changeNav.value = {
     total: blocks.length,
-    current: nearestChangeIndex(blocks, view.centerRowIndex()) + 1,
+    current:
+      currentChangeIndex(
+        blocks,
+        view.rows.length,
+        view.rowHeight,
+        view.viewportHeight,
+        view.scrollTop,
+      ) + 1,
   };
 }
 
