@@ -101,6 +101,10 @@ writeFileSync(
   JSON.stringify(
     {
       'workbench.colorTheme': process.env.CTM_THEME ?? 'Dark Modern',
+      // Otherwise VS Code swaps a high-contrast theme back to the preferred dark theme when the OS
+      // itself is not in high-contrast mode.
+      'window.autoDetectHighContrast': false,
+      'window.autoDetectColorScheme': false,
       'window.newWindowDimensions': 'default',
       'workbench.startupEditor': 'none',
       'update.mode': 'none',

@@ -107,6 +107,10 @@ const CARDS_SCRIPT = `(() => {
     }
     await api.waitForIdle(uri);
     await sleep(2500);
+    const inspected = vscode.workspace.getConfiguration('workbench').inspect('colorTheme');
+    console.log(
+      `[visual] theme setting: ${String(vscode.workspace.getConfiguration('workbench').get('colorTheme'))} (global ${String(inspected?.globalValue)}, workspace ${String(inspected?.workspaceValue)}), kind: ${vscode.window.activeColorTheme.kind}, autoDetectHC: ${String(vscode.workspace.getConfiguration('window').get('autoDetectHighContrast'))}`,
+    );
     await shot('01-open');
 
     const targets = await listTargets(cdpPort);

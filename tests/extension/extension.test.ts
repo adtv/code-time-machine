@@ -95,10 +95,13 @@ describe('Code Time Machine extension', () => {
       'active revision is syntax highlighted (worker)',
     );
     assert.equal(api.panelCount(), panelsBefore + 1);
-    const tabs = vscode.window.tabGroups.all.flatMap((g) => g.tabs);
-    assert.ok(
-      tabs.some((t) => t.label === 'History: service.ts'),
-      'a webview tab titled "History: service.ts" exists',
+    await waitFor(
+      () =>
+        vscode.window.tabGroups.all
+          .flatMap((g) => g.tabs)
+          .some((t) => t.label === 'History: service.ts'),
+      10_000,
+      'a webview tab titled "History: service.ts"',
     );
   });
 
