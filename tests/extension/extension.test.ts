@@ -60,6 +60,7 @@ describe('Code Time Machine extension', () => {
   it('opens the history of a file in the second workspace folder (multi-root, rename followed)', async function () {
     this.timeout(60_000);
     const uri = vscode.Uri.joinPath(folder('repoB').uri, 'src', 'service.ts');
+    const panelsBefore = api.panelCount();
     const document = await vscode.workspace.openTextDocument(uri);
     await vscode.window.showTextDocument(document);
     await vscode.commands.executeCommand('codeTimeMachine.openFileHistory');
@@ -89,7 +90,7 @@ describe('Code Time Machine extension', () => {
       snapshot.loadedViews.includes(snapshot.revisions[0]?.id ?? ''),
       'active revision loaded',
     );
-    assert.equal(api.panelCount(), 1);
+    assert.equal(api.panelCount(), panelsBefore + 1);
     const tabs = vscode.window.tabGroups.all.flatMap((g) => g.tabs);
     assert.ok(
       tabs.some((t) => t.label === 'History: service.ts'),

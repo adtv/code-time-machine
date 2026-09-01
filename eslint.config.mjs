@@ -58,7 +58,7 @@ export default defineConfig(
   },
   {
     files: ['tests/**/*.{ts,tsx}'],
-    rules: { '@typescript-eslint/no-non-null-assertion': 'off' },
+    rules: { '@typescript-eslint/no-non-null-assertion': 'off', 'no-console': 'off' },
   },
   {
     files: ['**/*.mjs', '**/*.js', '**/*.cjs'],

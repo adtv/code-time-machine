@@ -155,8 +155,10 @@ button {
 .ctm-card-header {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 2px;
-  padding: 8px 12px;
+  height: var(--ctm-peek, 42px);
+  padding: 4px 12px;
   border-bottom: 1px solid var(--ctm-border);
   background: var(--vscode-sideBarSectionHeader-background, transparent);
 }
@@ -394,4 +396,143 @@ body.vscode-high-contrast .ctm-row-ghost,
 body.vscode-high-contrast-light .ctm-row-ghost {
   outline: 1px dashed var(--ctm-removed-fg);
   outline-offset: -1px;
+}
+
+/* ---- deck layering ---------------------------------------------------------------------- */
+/*
+ * Geometry: the newer card peeks above the active one by exactly its header height, the older
+ * card peeks below by its footer height, and the second older card peeks a little further.
+ * Cards keep the same DOM node when they change slot, so these transforms animate.
+ */
+.ctm-deck {
+  --ctm-anim-duration: 200ms;
+  --ctm-anim-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ctm-peek: 42px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.ctm-deck .ctm-card {
+  position: absolute;
+  top: calc(var(--ctm-peek) + 12px);
+  right: 28px;
+  bottom: calc(var(--ctm-peek) * 1.7 + 12px);
+  left: 28px;
+  transform-origin: 50% 50%;
+  transition:
+    transform var(--ctm-anim-duration) var(--ctm-anim-ease),
+    opacity var(--ctm-anim-duration) var(--ctm-anim-ease),
+    box-shadow var(--ctm-anim-duration) var(--ctm-anim-ease);
+  will-change: transform, opacity;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+.ctm-card[data-slot='0'] {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  z-index: 10;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
+}
+
+/* scale(0.97) pulls each edge in by ~1.5% of the card height; the translate compensates so the
+   peeking strip equals --ctm-peek. */
+.ctm-card[data-slot='-1'] {
+  transform: translateY(calc(-1 * var(--ctm-peek) - 10px)) scale(0.97);
+  opacity: 0.42;
+  z-index: 9;
+}
+
+.ctm-card[data-slot='1'] {
+  transform: translateY(calc(var(--ctm-peek) + 10px)) scale(0.97);
+  opacity: 0.42;
+  z-index: 9;
+}
+
+.ctm-card[data-slot='2'] {
+  transform: translateY(calc(var(--ctm-peek) * 1.75 + 20px)) scale(0.94);
+  opacity: 0.18;
+  z-index: 8;
+}
+
+.ctm-card[data-slot='hidden-newer'] {
+  transform: translateY(calc(-1.6 * var(--ctm-peek))) scale(0.94);
+  opacity: 0;
+  z-index: 7;
+  pointer-events: none;
+}
+
+.ctm-card[data-slot='hidden-older'] {
+  transform: translateY(calc(2.4 * var(--ctm-peek))) scale(0.91);
+  opacity: 0;
+  z-index: 7;
+  pointer-events: none;
+}
+
+.ctm-card-background {
+  cursor: pointer;
+}
+
+.ctm-card-background:hover {
+  opacity: 0.6;
+}
+
+.ctm-card-background .ctm-code {
+  overflow: hidden; /* background cards scroll programmatically only */
+  pointer-events: none;
+}
+
+/* Footer mirrors the header so the older card is readable where it peeks (below). */
+.ctm-card-footer {
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 12px;
+  height: var(--ctm-peek);
+  border-top: 1px solid var(--ctm-border);
+  color: var(--vscode-foreground);
+  background: var(--vscode-sideBarSectionHeader-background, transparent);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.ctm-card-background .ctm-card-footer {
+  display: flex;
+}
+
+.ctm-footer-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.ctm-footer-meta {
+  color: var(--ctm-muted);
+  font-size: 0.92em;
+}
+
+.ctm-footer-hash {
+  font-family: var(--vscode-editor-font-family);
+  font-size: 0.95em;
+  padding: 0 6px;
+  border-radius: 4px;
+  border: 1px solid var(--ctm-border);
+  background: var(--vscode-badge-background);
+  color: var(--vscode-badge-foreground);
+}
+
+.ctm-footer-subject {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ctm-deck .ctm-card {
+    transition: none;
+  }
+}
+
+body.vscode-reduce-motion .ctm-deck .ctm-card {
+  transition: none;
 }

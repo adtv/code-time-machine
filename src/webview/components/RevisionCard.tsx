@@ -4,29 +4,47 @@ import type { RevisionMeta } from '../../shared/models/revision';
 import { CodeView } from '../rendering/codeView';
 import { buildRows } from '../rendering/rows';
 import { config } from '../state/store';
-import { CommitHeader } from './CommitHeader';
+import { CommitHeader, formatDate } from './CommitHeader';
+import { slotFor } from './RevisionDeck';
 
 export interface RevisionCardProps {
   revision: RevisionMeta;
   view: RevisionView | undefined;
   error: string | undefined;
-  /** 0 = active; negative = newer (in front/above); positive = older (behind). */
+  /** 0 = active; negative = newer (stacked above); positive = older (stacked below). */
   offset: number;
+  onActivate?: () => void;
 }
 
 export const ROW_HEIGHT = 20;
 
-export function RevisionCard({ revision, view, error, offset }: RevisionCardProps) {
+export function RevisionCard({ revision, view, error, offset, onActivate }: RevisionCardProps) {
   const isActive = offset === 0;
+  const slot = slotFor(offset);
+  const shortHash = revision.kind === 'workingTree' ? 'Working Tree' : revision.id.slice(0, 8);
   return (
     <article
-      class={`ctm-card ${isActive ? 'ctm-card-active' : ''}`}
+      class={`ctm-card ${isActive ? 'ctm-card-active' : 'ctm-card-background'}`}
       data-offset={offset}
+      data-slot={slot}
       aria-hidden={!isActive}
-      aria-label={`Revision ${revision.id.slice(0, 8)}: ${revision.subject}`}
+      aria-label={`Revision ${shortHash}: ${revision.subject}`}
+      title={isActive ? undefined : `Go to ${shortHash} — ${revision.subject}`}
+      onClick={isActive ? undefined : onActivate}
     >
       <CommitHeader revision={revision} />
       <CardBody view={view} error={error} />
+      <footer class="ctm-card-footer" aria-hidden="true">
+        <div class="ctm-footer-line">
+          <span class="ctm-footer-hash">{shortHash}</span>
+          <span class="ctm-footer-subject">{revision.subject}</span>
+        </div>
+        <div class="ctm-footer-line ctm-footer-meta">
+          <span>{revision.author.name}</span>
+          <span aria-hidden="true">·</span>
+          <span>{formatDate(revision.authorDate)}</span>
+        </div>
+      </footer>
     </article>
   );
 }

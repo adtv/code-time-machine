@@ -4,6 +4,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createDemoRepo } from './make-demo-repo.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const fixtures = path.join(root, '.vscode-test', 'fixtures');
@@ -88,10 +89,34 @@ write(
 commit(repoB, 'B: add logging');
 write(repoB, 'untracked.ts', 'export const untracked = true;\n');
 
+// demo: realistic 20-commit history used for visual checks and manual testing
+createDemoRepo(path.join(fixtures, 'demo'));
+
+// Default user settings for the test instance (fresh user-data-dir): a predictable theme and
+// window so screenshots are comparable.
+const userDir = path.join(root, '.vscode-test', 'user-data', 'User');
+mkdirSync(userDir, { recursive: true });
+writeFileSync(
+  path.join(userDir, 'settings.json'),
+  JSON.stringify(
+    {
+      'workbench.colorTheme': process.env.CTM_THEME ?? 'Dark Modern',
+      'window.newWindowDimensions': 'default',
+      'workbench.startupEditor': 'none',
+      'update.mode': 'none',
+      'telemetry.telemetryLevel': 'off',
+      'extensions.ignoreRecommendations': true,
+    },
+    null,
+    2,
+  ),
+);
+
 const workspace = {
   folders: [
     { path: 'repoA', name: 'repoA' },
     { path: 'repoB', name: 'repoB' },
+    { path: 'demo', name: 'demo' },
   ],
   settings: {
     'git.openRepositoryInParentFolders': 'never',
