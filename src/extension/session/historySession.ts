@@ -39,6 +39,7 @@ export interface HighlightProvider {
     languageId: string,
     theme: ThemeKind,
     signal?: AbortSignal,
+    fileName?: string,
   ): Promise<HighlightedLines | undefined>;
 }
 
@@ -61,6 +62,8 @@ export interface SessionSnapshot {
   revisions: readonly RevisionMeta[];
   hasMore: boolean;
   loadedViews: readonly string[];
+  /** Ids of loaded views that carry syntax highlighting. */
+  highlightedViews: readonly string[];
   emptyState?: EmptyState;
 }
 
@@ -97,6 +100,7 @@ export class HistorySession {
       revisions: this.revisions,
       hasMore: this.hasMore,
       loadedViews: [...this.views.keys()],
+      highlightedViews: [...this.views.values()].filter((v) => v.highlight).map((v) => v.id),
     };
     if (this.emptyState) {
       snapshot.emptyState = this.emptyState;
@@ -531,14 +535,27 @@ export class HistorySession {
     }
     const theme = this.deps.theme();
     const result: { current?: HighlightedLines; deleted?: HighlightedLines } = {};
-    const own = await highlighter.highlight(current.lines, this.target.languageId, theme, signal);
+    const fileName = posixBasename(current.path);
+    const own = await highlighter.highlight(
+      current.lines,
+      this.target.languageId,
+      theme,
+      signal,
+      fileName,
+    );
     if (own) {
       result.current = own;
     }
     if (previous?.kind === 'text') {
       const deleted = collectDeletedLines(previous.lines, current.lines, settings.ignoreWhitespace);
       if (deleted.length > 0) {
-        const ghost = await highlighter.highlight(deleted, this.target.languageId, theme, signal);
+        const ghost = await highlighter.highlight(
+          deleted,
+          this.target.languageId,
+          theme,
+          signal,
+          fileName,
+        );
         if (ghost) {
           result.deleted = ghost;
         }

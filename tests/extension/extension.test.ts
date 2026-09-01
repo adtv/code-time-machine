@@ -90,6 +90,10 @@ describe('Code Time Machine extension', () => {
       snapshot.loadedViews.includes(snapshot.revisions[0]?.id ?? ''),
       'active revision loaded',
     );
+    assert.ok(
+      snapshot.highlightedViews.includes(snapshot.revisions[0]?.id ?? ''),
+      'active revision is syntax highlighted (worker)',
+    );
     assert.equal(api.panelCount(), panelsBefore + 1);
     const tabs = vscode.window.tabGroups.all.flatMap((g) => g.tabs);
     assert.ok(

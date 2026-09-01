@@ -38,8 +38,9 @@ const common = {
 /** @type {import('esbuild').BuildOptions} */
 const extensionOptions = {
   ...common,
-  entryPoints: ['src/extension/extension.ts'],
-  outfile: 'dist/extension.js',
+  entryPoints: ['src/extension/extension.ts', 'src/extension/highlight/highlight-worker.ts'],
+  outdir: 'dist',
+  entryNames: '[name]',
   format: 'cjs',
   platform: 'node',
   target: 'node20',

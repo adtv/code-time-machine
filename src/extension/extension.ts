@@ -1,6 +1,8 @@
+import path from 'node:path';
 import type * as vscode from 'vscode';
 import { registerCommands } from './commands/registerCommands';
 import { RepositoryResolver } from './git/repositoryResolver';
+import { WorkerHighlightService } from './highlight/highlightService';
 import { OutputChannelLogger } from './logging/outputChannelLogger';
 import { VsCodeWorkingTreeReader } from './revision/workingTree';
 import type { SessionSnapshot } from './session/historySession';
@@ -21,10 +23,16 @@ export function activate(context: vscode.ExtensionContext): CodeTimeMachineApi {
   logger.info('Code Time Machine activated');
 
   const resolver = new RepositoryResolver(logger);
+  const highlighter = new WorkerHighlightService(
+    path.join(context.extensionUri.fsPath, 'dist', 'highlight-worker.js'),
+    logger,
+  );
+  context.subscriptions.push(highlighter);
   const manager = new PanelManager({
     extensionUri: context.extensionUri,
     resolver,
     workingTree: new VsCodeWorkingTreeReader(),
+    highlighter,
     logger,
   });
   context.subscriptions.push(manager);
