@@ -1,0 +1,7 @@
+{
+  "files.exclude": { "out": true, "dist": true, ".vscode-test": true },
+  "search.exclude": { "out": true, "dist": true, ".vscode-test": true },
+  "typescript.tsc.autoDetect": "off",
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}

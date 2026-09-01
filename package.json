@@ -1,0 +1,268 @@
+{
+  "name": "code-time-machine",
+  "displayName": "Code Time Machine — Visual Git History",
+  "description": "Travel through a file's Git history: layered revisions, synchronized line mapping and continuous navigation.",
+  "version": "0.1.0",
+  "publisher": "adtv",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "vscode": "^1.100.0",
+    "node": ">=22"
+  },
+  "categories": [
+    "SCM Providers",
+    "Visualization",
+    "Other"
+  ],
+  "keywords": [
+    "git",
+    "history",
+    "time machine",
+    "file history",
+    "visualization"
+  ],
+  "main": "./dist/extension.js",
+  "extensionDependencies": [
+    "vscode.git"
+  ],
+  "extensionKind": [
+    "workspace"
+  ],
+  "capabilities": {
+    "virtualWorkspaces": false,
+    "untrustedWorkspaces": {
+      "supported": "limited",
+      "description": "Reads Git history of the workspace. Never writes to the repository."
+    }
+  },
+  "activationEvents": [],
+  "contributes": {
+    "commands": [
+      {
+        "command": "codeTimeMachine.openFileHistory",
+        "title": "Open File History",
+        "category": "Visual Git History",
+        "icon": "$(history)"
+      },
+      {
+        "command": "codeTimeMachine.previousRevision",
+        "title": "Previous Revision (Older)",
+        "category": "Visual Git History"
+      },
+      {
+        "command": "codeTimeMachine.nextRevision",
+        "title": "Next Revision (Newer)",
+        "category": "Visual Git History"
+      },
+      {
+        "command": "codeTimeMachine.goToRevision",
+        "title": "Go to Revision…",
+        "category": "Visual Git History"
+      },
+      {
+        "command": "codeTimeMachine.refresh",
+        "title": "Refresh",
+        "category": "Visual Git History",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "codeTimeMachine.openRevisionInEditor",
+        "title": "Open Active Revision in Editor",
+        "category": "Visual Git History"
+      },
+      {
+        "command": "codeTimeMachine.compareWithWorkingTree",
+        "title": "Compare Active Revision with Working Tree",
+        "category": "Visual Git History"
+      },
+      {
+        "command": "codeTimeMachine.showOutput",
+        "title": "Show Output Log",
+        "category": "Visual Git History"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "codeTimeMachine.openFileHistory",
+          "when": "resourceScheme == file"
+        },
+        {
+          "command": "codeTimeMachine.previousRevision",
+          "when": "codeTimeMachine.hasSession"
+        },
+        {
+          "command": "codeTimeMachine.nextRevision",
+          "when": "codeTimeMachine.hasSession"
+        },
+        {
+          "command": "codeTimeMachine.goToRevision",
+          "when": "codeTimeMachine.hasSession"
+        },
+        {
+          "command": "codeTimeMachine.refresh",
+          "when": "codeTimeMachine.hasSession"
+        },
+        {
+          "command": "codeTimeMachine.openRevisionInEditor",
+          "when": "codeTimeMachine.hasSession"
+        },
+        {
+          "command": "codeTimeMachine.compareWithWorkingTree",
+          "when": "codeTimeMachine.hasSession"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "codeTimeMachine.openFileHistory",
+          "when": "resourceScheme == file && !isInDiffEditor",
+          "group": "codeTimeMachine@1"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "codeTimeMachine.openFileHistory",
+          "when": "resourceScheme == file && !isInDiffEditor",
+          "group": "navigation@50"
+        },
+        {
+          "command": "codeTimeMachine.refresh",
+          "when": "activeWebviewPanelId == codeTimeMachine.history",
+          "group": "navigation@1"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "codeTimeMachine.openFileHistory",
+          "when": "resourceScheme == file && !explorerResourceIsFolder",
+          "group": "codeTimeMachine@1"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "codeTimeMachine.openFileHistory",
+        "key": "ctrl+alt+h",
+        "mac": "cmd+alt+h",
+        "when": "editorTextFocus && resourceScheme == file"
+      },
+      {
+        "command": "codeTimeMachine.previousRevision",
+        "key": "alt+down",
+        "when": "activeWebviewPanelId == codeTimeMachine.history"
+      },
+      {
+        "command": "codeTimeMachine.nextRevision",
+        "key": "alt+up",
+        "when": "activeWebviewPanelId == codeTimeMachine.history"
+      }
+    ],
+    "configuration": {
+      "title": "Visual Git History",
+      "properties": {
+        "visualGitHistory.maxCommits": {
+          "type": "number",
+          "default": 500,
+          "minimum": 10,
+          "maximum": 10000,
+          "description": "Maximum number of commits loaded for a file's history (loaded in pages)."
+        },
+        "visualGitHistory.preloadRevisions": {
+          "type": "number",
+          "default": 3,
+          "minimum": 1,
+          "maximum": 8,
+          "description": "How many revisions before and after the active one are preloaded."
+        },
+        "visualGitHistory.animationDuration": {
+          "type": "number",
+          "default": 200,
+          "minimum": 0,
+          "maximum": 1000,
+          "description": "Duration in milliseconds of the transition between revisions. Ignored when reduced motion is enabled."
+        },
+        "visualGitHistory.showGhostLines": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show lines removed by the active revision as faded ghost lines."
+        },
+        "visualGitHistory.followRenames": {
+          "type": "boolean",
+          "default": true,
+          "description": "Follow the file across renames (git log --follow)."
+        },
+        "visualGitHistory.ignoreWhitespace": {
+          "type": "boolean",
+          "default": false,
+          "description": "Ignore whitespace-only differences when diffing and mapping lines between revisions."
+        },
+        "visualGitHistory.maxFileSizeKB": {
+          "type": "number",
+          "default": 2048,
+          "minimum": 64,
+          "description": "Revisions larger than this size (KB) are not rendered."
+        },
+        "visualGitHistory.maxRenderedLines": {
+          "type": "number",
+          "default": 8000,
+          "minimum": 500,
+          "description": "Files with more lines than this open in simplified mode (no animation, no highlighting)."
+        },
+        "visualGitHistory.timeTravelModifier": {
+          "type": "string",
+          "enum": [
+            "alt",
+            "ctrl",
+            "shift"
+          ],
+          "default": "alt",
+          "description": "Modifier key that, combined with the mouse wheel, travels between revisions instead of scrolling the file."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build:prod",
+    "build": "node esbuild.mjs",
+    "build:prod": "node esbuild.mjs --production",
+    "watch": "node esbuild.mjs --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p src/webview/tsconfig.json --noEmit && tsc -p tests/extension/tsconfig.json --noEmit",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "test:unit": "vitest run --project unit",
+    "test:integration": "vitest run --project integration",
+    "test:webview": "vitest run --project webview",
+    "test:watch": "vitest",
+    "pretest:extension": "node esbuild.mjs --tests && node scripts/prepare-extension-fixtures.mjs",
+    "test:extension": "vscode-test",
+    "check": "npm run lint && npm run typecheck && npm test && npm run build",
+    "package": "npm run build:prod && vsce package --no-dependencies --allow-missing-repository",
+    "demo-repo": "node scripts/make-demo-repo.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@preact/signals": "2.11.1",
+    "@shikijs/langs": "4.4.3",
+    "@shikijs/themes": "4.4.3",
+    "@testing-library/preact": "3.2.4",
+    "@types/mocha": "10.0.10",
+    "@types/node": "22.19.0",
+    "@types/vscode": "1.100.0",
+    "@vscode/codicons": "0.0.46-24",
+    "@vscode/test-cli": "0.0.15",
+    "@vscode/test-electron": "3.1.0",
+    "@vscode/vsce": "3.9.2",
+    "esbuild": "0.28.2",
+    "eslint": "10.9.1",
+    "eslint-config-prettier": "10.1.8",
+    "happy-dom": "20.12.0",
+    "preact": "10.29.8",
+    "prettier": "3.9.6",
+    "shiki": "4.4.3",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.69.0",
+    "vitest": "4.1.11"
+  }
+}
