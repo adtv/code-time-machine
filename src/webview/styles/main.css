@@ -561,6 +561,24 @@ body.vscode-high-contrast-light .ctm-row-ghost {
   flex: 0 0 auto;
 }
 
+.ctm-change-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 2px;
+  padding-left: 6px;
+  border-left: 1px solid var(--ctm-border);
+}
+
+.ctm-change-button {
+  padding: 0 3px;
+}
+
+.ctm-change-count {
+  font-variant-numeric: tabular-nums;
+  color: var(--vscode-foreground);
+}
+
 .ctm-footer-gap {
   display: inline-flex;
   align-items: center;

@@ -35,12 +35,16 @@ Everything is read-only.
 | Older / newer revision                  | <kbd>Alt</kbd>+wheel · <kbd>J</kbd> / <kbd>K</kbd> · <kbd>PageDown</kbd> / <kbd>PageUp</kbd> · <kbd>Alt</kbd>+<kbd>↓</kbd> / <kbd>↑</kbd> · toolbar arrows · click a peeking card |
 | Jump                                    | click the timeline · **Go to Revision…** command · <kbd>Alt</kbd>+<kbd>Home</kbd> / <kbd>End</kbd>                                                                                |
 | Scroll the file                         | plain wheel / trackpad — neighbouring revisions follow the same logical lines                                                                                                     |
+| Jump between change blocks              | <kbd>N</kbd> / <kbd>P</kbd> · <kbd>F7</kbd> / <kbd>Shift</kbd>+<kbd>F7</kbd> · ‹ k/n › control in the footer · click a marker in the minimap                                      |
 | Toggle ghost lines / minimap / timeline | toolbar buttons                                                                                                                                                                   |
 | Refresh                                 | <kbd>R</kbd> or toolbar                                                                                                                                                           |
 
-The active card has a **minimap** on its right edge: a scaled picture of the revision where added
-lines are tinted green and removed (ghost) lines red, so you can see _where_ a commit changed the
-file; click or drag it to scroll.
+The active card has a **minimap** on its right edge: a scaled picture of the revision with a solid
+green/red marker bar and tint where lines were added or removed (a red line marks deletions even
+when ghost lines are hidden), so you can see _where_ a commit changed the file; click or drag it to
+scroll. The footer counts the change blocks (`2/5 changes`) and its arrows — or <kbd>N</kbd> /
+<kbd>P</kbd>, <kbd>F7</kbd> / <kbd>Shift</kbd>+<kbd>F7</kbd> — centre the code on the previous/next
+block while the neighbouring revisions follow.
 
 Header actions on the active card: copy hash (click the hash chip), copy message, open the
 revision in a read-only editor, compare with the working tree (VS Code diff editor).

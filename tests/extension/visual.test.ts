@@ -179,6 +179,31 @@ const CARDS_SCRIPT = `(() => {
     await sleep(700);
     assert.equal(api.getSessionSnapshot(uri)?.activeIndex, 5, 'timeline click selected revision 5');
     await shot('03b-timeline-click');
+
+    // Change navigation: revision 2 ("Formatting: double quotes") has several change blocks.
+    await webview.evaluate(
+      `(() => { const doc = ${WEBVIEW_DOC}; doc.querySelector('.ctm-timeline-item[data-index="2"]').click(); return true; })()`,
+    );
+    await sleep(900);
+    const readNav = `(() => { const doc = ${WEBVIEW_DOC}; const active = doc.querySelector('.ctm-card[data-slot="0"]'); const count = active.querySelector('.ctm-change-count'); return JSON.stringify({ count: count ? count.textContent : null, scrollTop: active.querySelector('.ctm-code').scrollTop }); })()`;
+    const navBefore = JSON.parse(await webview.evaluate<string>(readNav)) as {
+      count: string | null;
+      scrollTop: number;
+    };
+    await webview.evaluate(
+      `(() => { const doc = ${WEBVIEW_DOC}; const W = doc.defaultView; W.dispatchEvent(new W.KeyboardEvent('keydown', { key: 'n', bubbles: true, cancelable: true })); W.dispatchEvent(new W.KeyboardEvent('keydown', { key: 'n', bubbles: true, cancelable: true })); return true; })()`,
+    );
+    await sleep(500);
+    const navAfter = JSON.parse(await webview.evaluate<string>(readNav)) as {
+      count: string | null;
+      scrollTop: number;
+    };
+    console.log(
+      `[visual] change nav: before ${JSON.stringify(navBefore)} after ${JSON.stringify(navAfter)}`,
+    );
+    assert.match(navAfter.count ?? '', /^\d+\/\d+ changes?$/u, 'footer shows k/n changes');
+    assert.notEqual(navAfter.scrollTop, navBefore.scrollTop, 'N moved the code to a change block');
+    await shot('03c-change-nav');
     const afterNav = await webview.evaluate<CardInfo[]>(CARDS_SCRIPT);
     for (const card of afterNav) {
       console.log(

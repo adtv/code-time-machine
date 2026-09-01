@@ -1,4 +1,4 @@
-import type { Row, RowModel } from './rows';
+import type { ChangeBlock, Row, RowModel } from './rows';
 
 export interface CodeViewOptions {
   /** Row height in pixels; must match the CSS. */
@@ -16,7 +16,7 @@ export class CodeView {
   readonly root: HTMLElement;
   private readonly spacer: HTMLElement;
   private readonly layer: HTMLElement;
-  private model: RowModel = { rows: [], rowOfLine: [], lineCount: 0 };
+  private model: RowModel = { rows: [], rowOfLine: [], lineCount: 0, blocks: [] };
   private rendered = new Map<number, HTMLElement>();
   private frame = 0;
   private gutterWidth = 3;
@@ -66,6 +66,19 @@ export class CodeView {
 
   get rows(): readonly Row[] {
     return this.model.rows;
+  }
+
+  get blocks(): readonly ChangeBlock[] {
+    return this.model.blocks;
+  }
+
+  /** Row index at the vertical centre of the viewport (ghost rows included). */
+  centerRowIndex(): number {
+    const centerY = this.root.scrollTop + this.root.clientHeight / 2;
+    return Math.max(
+      0,
+      Math.min(this.model.rows.length - 1, Math.floor(centerY / this.options.rowHeight)),
+    );
   }
 
   /** Notified on every scroll (user or programmatic). */

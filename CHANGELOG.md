@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Change-block navigation: footer control `‹ k/n changes ›`, keys N/P and F7/Shift+F7 centre the
+  code on the previous/next hunk (synchronised with the neighbouring cards); minimap change
+  markers are stronger (solid gutter bar + tint, red line for hidden deletions); footer shows the
+  time elapsed since the previous revision.
+
 - Minimap on the active revision card (canvas): scaled code picture with token colours, added and
   removed lines tinted, slider for the visible region; click, drag and wheel to scroll. Setting
   `visualGitHistory.showMinimap` and a toolbar toggle.

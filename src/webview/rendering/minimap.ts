@@ -76,6 +76,8 @@ export interface MinimapColors {
   foreground: string;
   added: string;
   removed: string;
+  addedMarker: string;
+  removedMarker: string;
   slider: string;
   sliderHover: string;
   sliderActive: string;
@@ -83,6 +85,9 @@ export interface MinimapColors {
 
 const STATIC_LAYER_MAX_HEIGHT = 16_384;
 const TAB_COLUMNS = 4;
+/** Solid change marker at the left edge of the minimap (like the editor's minimap gutter). */
+const MARKER_WIDTH = 4;
+const TEXT_OFFSET = MARKER_WIDTH + 2;
 
 /**
  * Canvas minimap for one CodeView: a scaled-down picture of the rows (token colours, added and
@@ -92,7 +97,7 @@ const TAB_COLUMNS = 4;
 export class Minimap {
   private readonly ctx: CanvasRenderingContext2D | null;
   private readonly staticLayer = document.createElement('canvas');
-  private model: RowModel = { rows: [], rowOfLine: [], lineCount: 0 };
+  private model: RowModel = { rows: [], rowOfLine: [], lineCount: 0, blocks: [] };
   private layout: MinimapLayout | undefined;
   private cssWidth = 0;
   private cssHeight = 0;
@@ -207,24 +212,35 @@ export class Minimap {
         continue;
       }
       const y = i * layout.miniRow;
-      if (row.kind === 'added') {
-        ctx.globalAlpha = 0.35;
-        ctx.fillStyle = this.colors.added;
-        ctx.fillRect(0, y, this.cssWidth, layout.miniRow);
-      } else if (row.kind === 'ghost') {
-        ctx.globalAlpha = 0.35;
-        ctx.fillStyle = this.colors.removed;
-        ctx.fillRect(0, y, this.cssWidth, layout.miniRow);
+      if (row.kind === 'added' || row.kind === 'ghost') {
+        const tint = row.kind === 'added' ? this.colors.added : this.colors.removed;
+        const marker = row.kind === 'added' ? this.colors.addedMarker : this.colors.removedMarker;
+        ctx.globalAlpha = 0.5;
+        ctx.fillStyle = tint;
+        ctx.fillRect(TEXT_OFFSET - 1, y, this.cssWidth - TEXT_OFFSET + 1, layout.miniRow);
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = marker;
+        ctx.fillRect(0, y, MARKER_WIDTH, layout.miniRow);
       }
       this.drawRowText(ctx, row, y, Math.max(1, layout.miniRow - (layout.miniRow > 1 ? 1 : 0)));
+    }
+    // Pure deletions whose ghost rows are hidden still deserve a mark where the lines were.
+    for (const block of this.model.blocks) {
+      if (block.rowCount === 0 && block.removed > 0) {
+        const y = Math.min(height - 2, block.startRow * layout.miniRow);
+        ctx.globalAlpha = 0.95;
+        ctx.fillStyle = this.colors.removedMarker;
+        ctx.fillRect(0, Math.max(0, y - 1), this.cssWidth, 2);
+      }
     }
     ctx.globalAlpha = 1;
   }
 
   private drawRowText(ctx: CanvasRenderingContext2D, row: Row, y: number, h: number): void {
-    const maxCols = this.cssWidth;
+    const maxCols = this.cssWidth - TEXT_OFFSET;
     let col = 0;
     const ghost = row.kind === 'ghost';
+    const x0 = TEXT_OFFSET;
     const drawRuns = (text: string, color: string): boolean => {
       ctx.fillStyle = color;
       let runStart = -1;
@@ -232,7 +248,7 @@ export class Minimap {
         const ch = text.charCodeAt(i);
         if (ch === 32 || ch === 9) {
           if (runStart >= 0) {
-            ctx.fillRect(runStart, y, col - runStart, h);
+            ctx.fillRect(x0 + runStart, y, col - runStart, h);
             runStart = -1;
           }
           col += ch === 9 ? TAB_COLUMNS : 1;
@@ -244,13 +260,13 @@ export class Minimap {
         }
         if (col >= maxCols) {
           if (runStart >= 0) {
-            ctx.fillRect(runStart, y, maxCols - runStart, h);
+            ctx.fillRect(x0 + runStart, y, maxCols - runStart, h);
           }
           return false;
         }
       }
       if (runStart >= 0) {
-        ctx.fillRect(runStart, y, col - runStart, h);
+        ctx.fillRect(x0 + runStart, y, col - runStart, h);
       }
       return true;
     };
@@ -394,6 +410,11 @@ export function readMinimapColors(element: Element): MinimapColors {
     foreground: read('--vscode-editor-foreground', '#cccccc'),
     added: read('--ctm-added-fg', '#81b88b'),
     removed: read('--ctm-removed-fg', '#c74e39'),
+    addedMarker: read('--vscode-minimapGutter-addedBackground', read('--ctm-added-fg', '#81b88b')),
+    removedMarker: read(
+      '--vscode-minimapGutter-deletedBackground',
+      read('--ctm-removed-fg', '#c74e39'),
+    ),
     slider: read('--vscode-minimapSlider-background', 'rgba(121, 121, 121, 0.2)'),
     sliderHover: read('--vscode-minimapSlider-hoverBackground', 'rgba(100, 100, 100, 0.35)'),
     sliderActive: read('--vscode-minimapSlider-activeBackground', 'rgba(191, 191, 191, 0.4)'),

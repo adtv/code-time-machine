@@ -1,10 +1,13 @@
+import { getCodeView } from '../rendering/registry';
 import { postToExtension } from '../state/messaging';
-import { navigate, revisions, setActive } from '../state/store';
+import { activeRevision, navigate, revisions, setActive } from '../state/store';
+import { jumpToChange } from './changeNavigation';
 
 /**
  * Global keyboard shortcuts. Positive navigation = older.
  *   J / PageDown / Alt+↓  → older      K / PageUp / Alt+↑ → newer
  *   Alt+Home → newest      Alt+End → oldest        R → refresh
+ *   N / F7 → next change block   P / Shift+F7 → previous change block
  * Plain arrow keys are left to the focused element (scrolling code).
  */
 export function installKeyboard(target: Window = window): () => void {
@@ -67,9 +70,22 @@ export function handleKey(
     case 'R':
       postToExtension({ type: 'refresh' });
       return true;
+    case 'n':
+    case 'N':
+      return jumpToChange(activeCodeView(), 1);
+    case 'p':
+    case 'P':
+      return jumpToChange(activeCodeView(), -1);
+    case 'F7':
+      return jumpToChange(activeCodeView(), event.shiftKey ? -1 : 1);
     default:
       return false;
   }
+}
+
+function activeCodeView() {
+  const id = activeRevision.value?.id;
+  return id === undefined ? undefined : getCodeView(id);
 }
 
 function isEditable(target: EventTarget | null): boolean {

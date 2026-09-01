@@ -4,7 +4,8 @@ import type { RevisionMeta } from '../../shared/models/revision';
 import { scrollSync } from '../interaction/sync';
 import { CodeView } from '../rendering/codeView';
 import { Minimap, readMinimapColors } from '../rendering/minimap';
-import { registerCodeView } from '../rendering/registry';
+import { getCodeView, registerCodeView } from '../rendering/registry';
+import { changeNav, jumpToChange, refreshChangeNav } from '../interaction/changeNavigation';
 import { buildRows } from '../rendering/rows';
 import { revisions, showGhostLines, showMinimap, theme } from '../state/store';
 import { CommitActions } from './CommitActions';
@@ -151,12 +152,24 @@ function CodeViewHost({ view, active }: { view: RevisionView; active: boolean })
     });
     codeView.current = instance;
     const unregister = registerCodeView(view.id, instance);
+    const unsubscribe = instance.subscribeScroll(() => {
+      if (isActive.current) {
+        refreshChangeNav(instance);
+      }
+    });
     return () => {
+      unsubscribe();
       unregister();
       instance.dispose();
       codeView.current = undefined;
     };
   }, [view.id]);
+
+  useEffect(() => {
+    if (active) {
+      refreshChangeNav(codeView.current);
+    }
+  }, [active, view, showGhost]);
 
   useEffect(() => {
     const model = buildRows(view, showGhost);
@@ -212,6 +225,7 @@ function ActiveStatus({
   previous: RevisionMeta | undefined;
 }) {
   const gap = gapSincePrevious(revision, previous);
+  const nav = changeNav.value;
   if (!view) {
     return <div class="ctm-footer-status">Loading…</div>;
   }
@@ -245,6 +259,31 @@ function ActiveStatus({
             vs previous: <span class="ctm-stat-add">+{added}</span>{' '}
             <span class="ctm-stat-del">−{removed}</span>
           </span>
+          {nav && nav.total > 0 ? (
+            <span class="ctm-change-nav" role="group" aria-label="Change blocks">
+              <button
+                type="button"
+                class="ctm-icon-button ctm-change-button"
+                title="Previous change (P, Shift+F7)"
+                aria-label="Previous change"
+                onClick={() => jumpToChange(getCodeView(revision.id), -1)}
+              >
+                <span class="codicon codicon-arrow-up" aria-hidden="true" />
+              </button>
+              <span class="ctm-change-count" aria-live="polite">
+                {nav.current}/{nav.total} {nav.total === 1 ? 'change' : 'changes'}
+              </span>
+              <button
+                type="button"
+                class="ctm-icon-button ctm-change-button"
+                title="Next change (N, F7)"
+                aria-label="Next change"
+                onClick={() => jumpToChange(getCodeView(revision.id), 1)}
+              >
+                <span class="codicon codicon-arrow-down" aria-hidden="true" />
+              </button>
+            </span>
+          ) : null}
         </>
       ) : (
         <>

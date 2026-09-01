@@ -12,7 +12,7 @@ function model(lines: number, ghostAfter?: number): RowModel {
     rowOfLine[i] = rows.length;
     rows.push({ kind: 'context', line: i, text: `line ${i}` });
   }
-  return { rows, rowOfLine, lineCount: lines };
+  return { rows, rowOfLine, lineCount: lines, blocks: [] };
 }
 
 /** happy-dom has no layout; emulate a 200px tall viewport. */
