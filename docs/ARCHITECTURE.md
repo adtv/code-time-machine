@@ -66,9 +66,16 @@ added, and `diff/` + `mapping/` moved to `shared/` because they are pure and sha
 
 ## 4. Key decisions (living list)
 
-- **History source**: `git log --follow -M … -z --name-status --numstat -- <path>` paginated with
-  `--skip/-n`. The path _at each revision_ comes from the name-status record, so renames are
-  followed and each revision keeps its own `path`.
+- **History source**: `git log --follow -M --diff-merges=first-parent --raw --numstat --no-abbrev -z
+--format=… -n <count+1> -- <path>`. `--raw` gives status (A/M/D/R/C), old/new path and the blob
+  SHA at each revision (used as the content cache key); `--numstat` gives magnitude. Findings
+  that shaped this (verified against git 2.43, fixtures in `tests/fixtures`):
+  - `--name-status` and `--numstat` together emit only name-status; `--raw` + `--numstat` combine.
+  - **`--skip` is unreliable with `--follow`**: git switches to the pre-rename path only when the
+    rename commit is actually output, so a page starting just after a rename returns nothing.
+    Pagination therefore re-requests with a growing `-n` (100 → 300 → 700 …) and slices; the walk
+    is identical to a one-shot `--follow`, and the extra cost is bounded by the tree diffs git
+    performs anyway. `maxCommits` caps the total.
 - **Deck diff semantics**: the diff shown between adjacent cards is the content diff between
   adjacent entries of the file's history (the file timeline), computed in-process. Per-commit
   `+/-` shown in commit info comes from `--numstat` against the first parent. Merge commits

@@ -49,6 +49,10 @@ export default defineConfig(
     rules: { 'no-console': 'off' },
   },
   {
+    files: ['tests/**/*.{ts,tsx}'],
+    rules: { '@typescript-eslint/no-non-null-assertion': 'off' },
+  },
+  {
     files: ['**/*.mjs', '**/*.js', '**/*.cjs'],
     languageOptions: {
       globals: { console: 'readonly', process: 'readonly', URL: 'readonly' },

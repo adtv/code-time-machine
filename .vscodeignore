@@ -16,7 +16,7 @@ coverage/**
 .editorconfig
 eslint.config.mjs
 esbuild.mjs
-vitest.config.ts
+vitest.config.mts
 .vscode-test.mjs
 tsconfig*.json
 **/tsconfig.json
