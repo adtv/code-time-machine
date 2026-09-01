@@ -4,6 +4,8 @@ export interface CodeViewOptions {
   /** Row height in pixels; must match the CSS. */
   rowHeight: number;
   overscan: number;
+  /** Called after a scroll initiated by the user (not by scrollLineToCenter). */
+  onUserScroll?: (view: CodeView) => void;
 }
 
 /**
@@ -18,6 +20,8 @@ export class CodeView {
   private rendered = new Map<number, HTMLElement>();
   private frame = 0;
   private gutterWidth = 3;
+  /** scrollTop we set programmatically; a scroll event landing there is not a user scroll. */
+  private expectedTop = Number.NaN;
 
   constructor(
     container: HTMLElement,
@@ -56,38 +60,77 @@ export class CodeView {
     return this.model.rowOfLine[line] ?? -1;
   }
 
-  /** Content line of the row rendered at the vertical centre of the viewport (or nearest). */
+  /**
+   * Content line rendered at the vertical centre of the viewport (nearest non-ghost row) and the
+   * pixel distance from that row's top to the centre line.
+   */
   centerLine(): { line: number; offset: number } {
+    const rows = this.model.rows;
+    if (rows.length === 0) {
+      return { line: 0, offset: 0 };
+    }
     const centerY = this.root.scrollTop + this.root.clientHeight / 2;
-    let rowIndex = Math.floor(centerY / this.options.rowHeight);
-    rowIndex = Math.max(0, Math.min(this.model.rows.length - 1, rowIndex));
-    // Walk to the nearest non-ghost row.
-    let row = this.model.rows[rowIndex];
-    let up = rowIndex;
-    let down = rowIndex;
-    while (row && row.line < 0 && (up > 0 || down < this.model.rows.length - 1)) {
-      up = Math.max(0, up - 1);
-      down = Math.min(this.model.rows.length - 1, down + 1);
-      row = (this.model.rows[down]?.line ?? -1) >= 0 ? this.model.rows[down] : this.model.rows[up];
-      rowIndex = row === this.model.rows[down] ? down : up;
+    let rowIndex = Math.max(
+      0,
+      Math.min(rows.length - 1, Math.floor(centerY / this.options.rowHeight)),
+    );
+    if ((rows[rowIndex]?.line ?? -1) < 0) {
+      // Ghost row at the centre: pick the nearest row that has a content line.
+      let up = rowIndex - 1;
+      let down = rowIndex + 1;
+      let found = -1;
+      while (up >= 0 || down < rows.length) {
+        if (down < rows.length && (rows[down]?.line ?? -1) >= 0) {
+          found = down;
+          break;
+        }
+        if (up >= 0 && (rows[up]?.line ?? -1) >= 0) {
+          found = up;
+          break;
+        }
+        up--;
+        down++;
+      }
+      if (found >= 0) {
+        rowIndex = found;
+      }
     }
     const offset = centerY - rowIndex * this.options.rowHeight;
-    return { line: row?.line ?? 0, offset };
+    return { line: rows[rowIndex]?.line ?? 0, offset };
   }
 
-  /** Scrolls so that `line` sits `offset` pixels below the viewport centre line. */
+  /**
+   * Scrolls (programmatically) so that content line `line` is rendered with its row top `offset`
+   * pixels above the viewport centre — the inverse of `centerLine()`.
+   */
   scrollLineToCenter(line: number, offset = this.options.rowHeight / 2): void {
-    const rowIndex = this.rowOfLine(line);
+    let rowIndex = this.rowOfLine(line);
     if (rowIndex < 0) {
-      return;
+      // Line not rendered (e.g. beyond the end): clamp to the nearest existing row.
+      rowIndex = line <= 0 ? 0 : this.model.rows.length - 1;
+      if (rowIndex < 0) {
+        return;
+      }
     }
     const target = rowIndex * this.options.rowHeight + offset - this.root.clientHeight / 2;
     const max = Math.max(
       0,
       this.model.rows.length * this.options.rowHeight - this.root.clientHeight,
     );
-    this.root.scrollTop = Math.max(0, Math.min(max, target));
+    const clamped = Math.max(0, Math.min(max, target));
+    if (Math.abs(clamped - this.root.scrollTop) < 0.5) {
+      return;
+    }
+    this.expectedTop = clamped;
+    this.root.scrollTop = clamped;
     this.render();
+  }
+
+  /** Marks the card as approximately synchronised (low mapping confidence). */
+  setSyncConfidence(confidence: number, exact: boolean): void {
+    const approximate = !exact || confidence < 0.3;
+    this.root.classList.toggle('ctm-code-approximate', approximate);
+    this.root.dataset['syncConfidence'] = confidence.toFixed(2);
   }
 
   dispose(): void {
@@ -98,13 +141,19 @@ export class CodeView {
   }
 
   private readonly onScroll = (): void => {
-    if (this.frame) {
-      return;
+    const programmatic = Math.abs(this.root.scrollTop - this.expectedTop) < 1;
+    if (!programmatic) {
+      this.expectedTop = Number.NaN;
     }
-    this.frame = requestAnimationFrame(() => {
-      this.frame = 0;
-      this.render();
-    });
+    if (!this.frame) {
+      this.frame = requestAnimationFrame(() => {
+        this.frame = 0;
+        this.render();
+      });
+    }
+    if (!programmatic) {
+      this.options.onUserScroll?.(this);
+    }
   };
 
   private clear(): void {
@@ -199,7 +248,7 @@ export function renderRow(row: Row, index: number, rowHeight: number): HTMLEleme
     text.textContent = row.text;
   }
   if (row.text.length === 0 && !row.spans) {
-    text.textContent = ' ';
+    text.textContent = ' ';
   }
   el.appendChild(text);
   return el;

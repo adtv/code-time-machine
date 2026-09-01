@@ -120,6 +120,7 @@ describe('Code Time Machine extension', () => {
   it('resolves the first workspace folder repository independently', async function () {
     this.timeout(60_000);
     const uri = vscode.Uri.joinPath(folder('repoA').uri, 'a.ts');
+    const panelsBefore = api.panelCount();
     await api.openFileHistory(uri);
     await waitFor(
       () => api.getSessionSnapshot(uri)?.status === 'ready',
@@ -130,7 +131,7 @@ describe('Code Time Machine extension', () => {
     assert.ok(snapshot);
     assert.equal(snapshot.revisions.length, 3);
     assert.equal(snapshot.revisions[0]?.subject, 'A: change a, add c');
-    assert.equal(api.panelCount(), 2);
+    assert.equal(api.panelCount(), panelsBefore + 1);
   });
 
   it('shows an empty state for untracked files', async function () {

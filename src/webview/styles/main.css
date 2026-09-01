@@ -154,6 +154,7 @@ button {
 
 .ctm-card-header {
   display: flex;
+  flex: 0 0 auto;
   flex-direction: column;
   justify-content: center;
   gap: 2px;
@@ -483,10 +484,12 @@ body.vscode-high-contrast-light .ctm-row-ghost {
 
 /* Footer mirrors the header so the older card is readable where it peeks (below). */
 .ctm-card-footer {
-  display: none;
+  display: flex;
+  flex: 0 0 auto;
   flex-direction: column;
+  justify-content: center;
   gap: 2px;
-  padding: 6px 12px;
+  padding: 4px 12px;
   height: var(--ctm-peek);
   border-top: 1px solid var(--ctm-border);
   color: var(--vscode-foreground);
@@ -495,8 +498,19 @@ body.vscode-high-contrast-light .ctm-row-ghost {
   overflow: hidden;
 }
 
-.ctm-card-background .ctm-card-footer {
+/* The active card's footer is a status line; background cards repeat their identity there. */
+.ctm-card-active .ctm-card-footer {
+  color: var(--ctm-muted);
+  font-size: 0.9em;
+}
+
+.ctm-footer-status {
   display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .ctm-footer-line {
@@ -535,4 +549,24 @@ body.vscode-high-contrast-light .ctm-row-ghost {
 
 body.vscode-reduce-motion .ctm-deck .ctm-card {
   transition: none;
+}
+
+/* ---- scroll sync ------------------------------------------------------------------------ */
+.ctm-code-approximate::after {
+  content: '≈ approximate alignment';
+  position: absolute;
+  right: 12px;
+  bottom: 6px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  border: 1px solid var(--ctm-border);
+  background: var(--vscode-editorWidget-background);
+  color: var(--ctm-muted);
+  font-family: var(--vscode-font-family);
+  font-size: 0.8em;
+  pointer-events: none;
+}
+
+.ctm-card-active .ctm-code-approximate::after {
+  display: none;
 }

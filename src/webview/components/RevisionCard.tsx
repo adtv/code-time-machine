@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'preact/hooks';
 import type { RevisionView } from '../../shared/messages/protocol';
 import type { RevisionMeta } from '../../shared/models/revision';
+import { scrollSync } from '../interaction/sync';
 import { CodeView } from '../rendering/codeView';
+import { registerCodeView } from '../rendering/registry';
 import { buildRows } from '../rendering/rows';
 import { config } from '../state/store';
 import { CommitHeader, formatDate } from './CommitHeader';
@@ -33,23 +35,37 @@ export function RevisionCard({ revision, view, error, offset, onActivate }: Revi
       onClick={isActive ? undefined : onActivate}
     >
       <CommitHeader revision={revision} />
-      <CardBody view={view} error={error} />
-      <footer class="ctm-card-footer" aria-hidden="true">
-        <div class="ctm-footer-line">
-          <span class="ctm-footer-hash">{shortHash}</span>
-          <span class="ctm-footer-subject">{revision.subject}</span>
-        </div>
-        <div class="ctm-footer-line ctm-footer-meta">
-          <span>{revision.author.name}</span>
-          <span aria-hidden="true">·</span>
-          <span>{formatDate(revision.authorDate)}</span>
-        </div>
+      <CardBody view={view} error={error} active={isActive} />
+      <footer class="ctm-card-footer" aria-hidden={!isActive}>
+        {isActive ? (
+          <ActiveStatus view={view} />
+        ) : (
+          <>
+            <div class="ctm-footer-line">
+              <span class="ctm-footer-hash">{shortHash}</span>
+              <span class="ctm-footer-subject">{revision.subject}</span>
+            </div>
+            <div class="ctm-footer-line ctm-footer-meta">
+              <span>{revision.author.name}</span>
+              <span aria-hidden="true">·</span>
+              <span>{formatDate(revision.authorDate)}</span>
+            </div>
+          </>
+        )}
       </footer>
     </article>
   );
 }
 
-function CardBody({ view, error }: { view: RevisionView | undefined; error: string | undefined }) {
+function CardBody({
+  view,
+  error,
+  active,
+}: {
+  view: RevisionView | undefined;
+  error: string | undefined;
+  active: boolean;
+}) {
   if (error) {
     return (
       <div class="ctm-card-message" role="alert">
@@ -89,13 +105,15 @@ function CardBody({ view, error }: { view: RevisionView | undefined; error: stri
         </div>
       );
     case 'text':
-      return <CodeViewHost view={view} />;
+      return <CodeViewHost view={view} active={active} />;
   }
 }
 
-function CodeViewHost({ view }: { view: RevisionView }) {
+function CodeViewHost({ view, active }: { view: RevisionView; active: boolean }) {
   const container = useRef<HTMLDivElement>(null);
   const codeView = useRef<CodeView>();
+  const isActive = useRef(active);
+  isActive.current = active;
   const showGhost = config.value.showGhostLines;
 
   useEffect(() => {
@@ -103,20 +121,89 @@ function CodeViewHost({ view }: { view: RevisionView }) {
     if (!el) {
       return;
     }
-    const instance = new CodeView(el, { rowHeight: ROW_HEIGHT, overscan: 20 });
+    const instance = new CodeView(el, {
+      rowHeight: ROW_HEIGHT,
+      overscan: 20,
+      onUserScroll: () => {
+        if (isActive.current) {
+          scrollSync.onActiveScrolled();
+        }
+      },
+    });
     codeView.current = instance;
+    const unregister = registerCodeView(view.id, instance);
     return () => {
+      unregister();
       instance.dispose();
       codeView.current = undefined;
     };
-  }, []);
+  }, [view.id]);
 
   useEffect(() => {
     codeView.current?.setModel(buildRows(view, showGhost));
+    scrollSync.onCardReady(view.id);
   }, [view, showGhost]);
 
   return (
-    <div ref={container} class="ctm-code" tabIndex={0} role="table" aria-label="Source code" />
+    <div
+      ref={container}
+      class="ctm-code"
+      tabIndex={active ? 0 : -1}
+      role="table"
+      aria-label="Source code"
+    />
+  );
+}
+
+/** Status line of the active card: size, line endings and the change against the previous revision. */
+function ActiveStatus({ view }: { view: RevisionView | undefined }) {
+  if (!view) {
+    return <div class="ctm-footer-status">Loading…</div>;
+  }
+  if (view.content.kind !== 'text') {
+    return (
+      <div class="ctm-footer-status">
+        {view.content.kind === 'missing' ? 'File absent at this revision' : view.content.kind}
+      </div>
+    );
+  }
+  const diff = view.diffFromPrevious;
+  let added = 0;
+  let removed = 0;
+  if (diff) {
+    for (const op of diff.ops) {
+      if (op.type !== 'equal') {
+        added += op.bLen;
+        removed += op.aLen;
+      }
+    }
+  }
+  return (
+    <div class="ctm-footer-status" role="status">
+      <span>{view.content.lines.length} lines</span>
+      <span aria-hidden="true">·</span>
+      <span>{view.content.eol}</span>
+      {diff ? (
+        <>
+          <span aria-hidden="true">·</span>
+          <span>
+            vs previous: <span class="ctm-stat-add">+{added}</span>{' '}
+            <span class="ctm-stat-del">−{removed}</span>
+          </span>
+        </>
+      ) : (
+        <>
+          <span aria-hidden="true">·</span>
+          <span>first known revision</span>
+        </>
+      )}
+      {view.simplified ? (
+        <>
+          <span aria-hidden="true">·</span>
+          <span>simplified mode</span>
+        </>
+      ) : null}
+    </div>
   );
 }
 
