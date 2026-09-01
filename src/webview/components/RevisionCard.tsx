@@ -6,9 +6,10 @@ import { CodeView } from '../rendering/codeView';
 import { Minimap, readMinimapColors } from '../rendering/minimap';
 import { registerCodeView } from '../rendering/registry';
 import { buildRows } from '../rendering/rows';
-import { showGhostLines, showMinimap, theme } from '../state/store';
+import { revisions, showGhostLines, showMinimap, theme } from '../state/store';
 import { CommitActions } from './CommitActions';
 import { CommitHeader, formatDate } from './CommitHeader';
+import { gapSincePrevious } from './format';
 import { slotFor } from './RevisionDeck';
 
 export interface RevisionCardProps {
@@ -52,7 +53,7 @@ export function RevisionCard({
       <CardBody view={view} error={error} active={isActive} />
       <footer class="ctm-card-footer" aria-hidden={!isActive}>
         {isActive ? (
-          <ActiveStatus view={view} />
+          <ActiveStatus view={view} revision={revision} previous={revisions.value[index + 1]} />
         ) : (
           <>
             <div class="ctm-footer-line">
@@ -201,7 +202,16 @@ function CodeViewHost({ view, active }: { view: RevisionView; active: boolean })
 }
 
 /** Status line of the active card: size, line endings and the change against the previous revision. */
-function ActiveStatus({ view }: { view: RevisionView | undefined }) {
+function ActiveStatus({
+  view,
+  revision,
+  previous,
+}: {
+  view: RevisionView | undefined;
+  revision: RevisionMeta;
+  previous: RevisionMeta | undefined;
+}) {
+  const gap = gapSincePrevious(revision, previous);
   if (!view) {
     return <div class="ctm-footer-status">Loading…</div>;
   }
@@ -242,6 +252,14 @@ function ActiveStatus({ view }: { view: RevisionView | undefined }) {
           <span>first known revision</span>
         </>
       )}
+      {gap ? (
+        <>
+          <span aria-hidden="true">·</span>
+          <span class="ctm-footer-gap" title={gap.title}>
+            <span class="codicon codicon-history" aria-hidden="true" /> {gap.text}
+          </span>
+        </>
+      ) : null}
       {view.simplified ? (
         <>
           <span aria-hidden="true">·</span>

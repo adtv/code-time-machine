@@ -561,6 +561,18 @@ body.vscode-high-contrast-light .ctm-row-ghost {
   flex: 0 0 auto;
 }
 
+.ctm-footer-gap {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--vscode-foreground);
+}
+
+.ctm-footer-gap .codicon {
+  font-size: 12px !important;
+  color: var(--ctm-muted);
+}
+
 .ctm-footer-line {
   display: flex;
   align-items: center;
