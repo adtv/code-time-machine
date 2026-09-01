@@ -1,7 +1,15 @@
 import type { RevisionMeta } from '../../shared/models/revision';
 import { postToExtension } from '../state/messaging';
 
-export function CommitHeader({ revision }: { revision: RevisionMeta }) {
+import type { ComponentChildren } from 'preact';
+
+export function CommitHeader({
+  revision,
+  actions,
+}: {
+  revision: RevisionMeta;
+  actions?: ComponentChildren;
+}) {
   const isWorkingTree = revision.kind === 'workingTree';
   const shortHash = isWorkingTree ? 'Working Tree' : revision.id.slice(0, 8);
   return (
@@ -28,6 +36,7 @@ export function CommitHeader({ revision }: { revision: RevisionMeta }) {
         </span>
         <Badges revision={revision} />
         <Stats revision={revision} />
+        {actions}
       </div>
       <div class="ctm-card-line2">
         <span class="ctm-author">{revision.author.name}</span>

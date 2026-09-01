@@ -1,5 +1,15 @@
 import { postToExtension } from '../state/messaging';
-import { activeIndex, hasMore, init, navigate, revisions } from '../state/store';
+import {
+  activeIndex,
+  hasMore,
+  init,
+  navigate,
+  revisions,
+  showGhostLines,
+  timelineVisible,
+  toggleGhostLines,
+  toggleTimeline,
+} from '../state/store';
 
 export function Toolbar() {
   const info = init.value;
@@ -38,10 +48,35 @@ export function Toolbar() {
         >
           <span class="codicon codicon-arrow-down" aria-hidden="true" />
         </button>
+        <span class="ctm-toolbar-separator" aria-hidden="true" />
+        <button
+          type="button"
+          class={`ctm-icon-button ${showGhostLines.value ? 'ctm-icon-button-on' : ''}`}
+          title={
+            showGhostLines.value
+              ? 'Hide removed lines (ghost lines)'
+              : 'Show removed lines (ghost lines)'
+          }
+          aria-label="Toggle ghost lines"
+          aria-pressed={showGhostLines.value}
+          onClick={() => toggleGhostLines()}
+        >
+          <span class="codicon codicon-diff-removed" aria-hidden="true" />
+        </button>
+        <button
+          type="button"
+          class={`ctm-icon-button ${timelineVisible.value ? 'ctm-icon-button-on' : ''}`}
+          title={timelineVisible.value ? 'Hide timeline' : 'Show timeline'}
+          aria-label="Toggle timeline"
+          aria-pressed={timelineVisible.value}
+          onClick={() => toggleTimeline()}
+        >
+          <span class="codicon codicon-list-tree" aria-hidden="true" />
+        </button>
         <button
           type="button"
           class="ctm-icon-button"
-          title="Refresh"
+          title="Refresh (R)"
           aria-label="Refresh history"
           onClick={() => postToExtension({ type: 'refresh' })}
         >

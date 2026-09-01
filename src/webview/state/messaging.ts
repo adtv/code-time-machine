@@ -39,3 +39,16 @@ export function onExtensionMessage(handler: (message: ExtensionToWebview) => voi
   window.addEventListener('message', listener);
   return () => window.removeEventListener('message', listener);
 }
+
+export interface PersistedState {
+  timelineVisible?: boolean;
+}
+
+export function getPersistedState(): PersistedState {
+  const raw = getApi()?.getState();
+  return typeof raw === 'object' && raw !== null ? raw : {};
+}
+
+export function persistState(patch: PersistedState): void {
+  getApi()?.setState({ ...getPersistedState(), ...patch });
+}

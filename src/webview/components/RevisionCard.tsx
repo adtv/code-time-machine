@@ -5,7 +5,8 @@ import { scrollSync } from '../interaction/sync';
 import { CodeView } from '../rendering/codeView';
 import { registerCodeView } from '../rendering/registry';
 import { buildRows } from '../rendering/rows';
-import { config } from '../state/store';
+import { showGhostLines } from '../state/store';
+import { CommitActions } from './CommitActions';
 import { CommitHeader, formatDate } from './CommitHeader';
 import { slotFor } from './RevisionDeck';
 
@@ -15,12 +16,21 @@ export interface RevisionCardProps {
   error: string | undefined;
   /** 0 = active; negative = newer (stacked above); positive = older (stacked below). */
   offset: number;
+  /** Index in the history list (for actions). */
+  index: number;
   onActivate?: () => void;
 }
 
 export const ROW_HEIGHT = 20;
 
-export function RevisionCard({ revision, view, error, offset, onActivate }: RevisionCardProps) {
+export function RevisionCard({
+  revision,
+  view,
+  error,
+  offset,
+  index,
+  onActivate,
+}: RevisionCardProps) {
   const isActive = offset === 0;
   const slot = slotFor(offset);
   const shortHash = revision.kind === 'workingTree' ? 'Working Tree' : revision.id.slice(0, 8);
@@ -34,7 +44,10 @@ export function RevisionCard({ revision, view, error, offset, onActivate }: Revi
       title={isActive ? undefined : `Go to ${shortHash} — ${revision.subject}`}
       onClick={isActive ? undefined : onActivate}
     >
-      <CommitHeader revision={revision} />
+      <CommitHeader
+        revision={revision}
+        actions={isActive ? <CommitActions revision={revision} index={index} /> : undefined}
+      />
       <CardBody view={view} error={error} active={isActive} />
       <footer class="ctm-card-footer" aria-hidden={!isActive}>
         {isActive ? (
@@ -114,7 +127,7 @@ function CodeViewHost({ view, active }: { view: RevisionView; active: boolean })
   const codeView = useRef<CodeView>();
   const isActive = useRef(active);
   isActive.current = active;
-  const showGhost = config.value.showGhostLines;
+  const showGhost = showGhostLines.value;
 
   useEffect(() => {
     const el = container.current;

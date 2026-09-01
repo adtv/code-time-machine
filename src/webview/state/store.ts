@@ -8,7 +8,7 @@ import type {
   WebviewConfig,
 } from '../../shared/messages/protocol';
 import type { RevisionMeta } from '../../shared/models/revision';
-import { postToExtension } from './messaging';
+import { getPersistedState, persistState, postToExtension } from './messaging';
 
 export const init = signal<InitPayload | undefined>(undefined);
 export const revisions = signal<RevisionMeta[]>([]);
@@ -27,6 +27,19 @@ export const config = signal<WebviewConfig>({
   maxRenderedLines: 8000,
 });
 export const theme = signal<ThemeKind>('dark');
+export const timelineVisible = signal<boolean>(getPersistedState().timelineVisible ?? true);
+/** Local override of config.showGhostLines (toolbar toggle); undefined = follow the setting. */
+export const ghostOverride = signal<boolean | undefined>(undefined);
+export const showGhostLines = computed(() => ghostOverride.value ?? config.value.showGhostLines);
+
+export function toggleTimeline(): void {
+  timelineVisible.value = !timelineVisible.value;
+  persistState({ timelineVisible: timelineVisible.value });
+}
+
+export function toggleGhostLines(): void {
+  ghostOverride.value = !showGhostLines.value;
+}
 
 export const activeRevision = computed(() => revisions.value[activeIndex.value]);
 export const activeView = computed(() => {

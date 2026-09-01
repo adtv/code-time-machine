@@ -1,5 +1,5 @@
-import { render } from '@testing-library/preact';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { cleanup, render } from '@testing-library/preact';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { RevisionMeta } from '../../src/shared/models/revision';
 import { RevisionDeck, slotFor } from '../../src/webview/components/RevisionDeck';
 import { applyMessage, resetStore, setActive } from '../../src/webview/state/store';
@@ -30,6 +30,7 @@ function offsetsByCard(container: HTMLElement): Record<string, string> {
 }
 
 describe('RevisionDeck', () => {
+  afterEach(() => cleanup());
   beforeEach(() => {
     resetStore();
     applyMessage({

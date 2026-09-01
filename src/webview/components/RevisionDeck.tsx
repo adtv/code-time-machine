@@ -45,6 +45,7 @@ export function RevisionDeck() {
         view={loaded.get(revision.id)}
         error={failed.get(revision.id)}
         offset={i - active}
+        index={i}
         onActivate={() => setActive(i)}
       />,
     );

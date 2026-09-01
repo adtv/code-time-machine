@@ -1,4 +1,5 @@
-import { busy, empty, init, revisions } from '../state/store';
+import { busy, empty, init, revisions, timelineVisible } from '../state/store';
+import { Timeline } from './Timeline';
 import { EmptyStateView } from './EmptyStateView';
 import { RevisionDeck } from './RevisionDeck';
 import { Toolbar } from './Toolbar';
@@ -19,7 +20,10 @@ export function App() {
             <span>{loading.message ?? 'Loading history…'}</span>
           </div>
         ) : (
-          <RevisionDeck />
+          <>
+            <RevisionDeck />
+            {timelineVisible.value ? <Timeline /> : null}
+          </>
         )}
       </main>
     </div>
