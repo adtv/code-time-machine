@@ -5,7 +5,15 @@ import tseslint from 'typescript-eslint';
 
 export default defineConfig(
   {
-    ignores: ['dist/**', 'out/**', 'node_modules/**', '.vscode-test/**', 'coverage/**', '*.vsix'],
+    ignores: [
+      'dist/**',
+      'out/**',
+      'node_modules/**',
+      '.vscode-test/**',
+      'coverage/**',
+      '*.vsix',
+      'src/extension/git/vscode-git.d.ts',
+    ],
   },
   js.configs.recommended,
   {

@@ -1,11 +1,397 @@
 :root {
-  color-scheme: light dark;
+  --ctm-row-height: 20px;
+  --ctm-gutter-chars: 3;
+  --ctm-added-bg: var(--vscode-diffEditor-insertedLineBackground, rgba(155, 185, 85, 0.2));
+  --ctm-removed-bg: var(--vscode-diffEditor-removedLineBackground, rgba(255, 0, 0, 0.2));
+  --ctm-added-fg: var(--vscode-gitDecoration-addedResourceForeground, #81b88b);
+  --ctm-removed-fg: var(--vscode-gitDecoration-deletedResourceForeground, #c74e39);
+  --ctm-border: var(--vscode-panel-border, var(--vscode-widget-border, rgba(128, 128, 128, 0.35)));
+  --ctm-card-bg: var(--vscode-editor-background);
+  --ctm-muted: var(--vscode-descriptionForeground);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
 }
 
 body {
   margin: 0;
+  overflow: hidden;
   font-family: var(--vscode-font-family);
   font-size: var(--vscode-font-size);
   color: var(--vscode-foreground);
   background: var(--vscode-editor-background);
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+.ctm-app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* ---- toolbar ---------------------------------------------------------------------------- */
+.ctm-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--ctm-border);
+  background: var(--vscode-editorGroupHeader-tabsBackground, var(--vscode-editor-background));
+  flex: 0 0 auto;
+}
+
+.ctm-toolbar-file {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.ctm-toolbar-name {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ctm-toolbar-repo {
+  color: var(--ctm-muted);
+  font-size: 0.9em;
+}
+
+.ctm-toolbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ctm-toolbar-position {
+  min-width: 5.5em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--ctm-muted);
+}
+
+.ctm-icon-button,
+.ctm-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  padding: 3px 6px;
+  cursor: pointer;
+}
+
+.ctm-icon-button:hover:not(:disabled),
+.ctm-button:hover:not(:disabled) {
+  background: var(--vscode-toolbar-hoverBackground);
+}
+
+.ctm-icon-button:focus-visible,
+.ctm-button:focus-visible,
+.ctm-hash:focus-visible,
+.ctm-code:focus-visible {
+  outline: 1px solid var(--vscode-focusBorder);
+  outline-offset: -1px;
+}
+
+.ctm-icon-button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.ctm-button {
+  border-color: var(--vscode-button-border, transparent);
+  background: var(--vscode-button-secondaryBackground);
+  color: var(--vscode-button-secondaryForeground);
+}
+
+.ctm-button:hover:not(:disabled) {
+  background: var(--vscode-button-secondaryHoverBackground);
+}
+
+/* ---- main / deck ------------------------------------------------------------------------ */
+.ctm-main {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+}
+
+.ctm-deck {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.ctm-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  border: 1px solid var(--ctm-border);
+  border-radius: 6px;
+  background: var(--ctm-card-bg);
+  overflow: hidden;
+}
+
+.ctm-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--ctm-border);
+  background: var(--vscode-sideBarSectionHeader-background, transparent);
+}
+
+.ctm-card-line1,
+.ctm-card-line2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.ctm-card-line2 {
+  color: var(--ctm-muted);
+  font-size: 0.92em;
+}
+
+.ctm-hash {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--vscode-editor-font-family);
+  font-size: 0.95em;
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--ctm-border);
+  background: var(--vscode-badge-background);
+  color: var(--vscode-badge-foreground);
+  cursor: pointer;
+}
+
+.ctm-hash-wt {
+  background: var(--vscode-editorInfo-foreground, #3794ff);
+  color: var(--vscode-editor-background);
+  border-color: transparent;
+  cursor: default;
+}
+
+.ctm-subject {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+.ctm-badges {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.ctm-badge {
+  font-size: 0.8em;
+  padding: 0 6px;
+  border-radius: 8px;
+  border: 1px solid var(--ctm-border);
+  color: var(--ctm-muted);
+  white-space: nowrap;
+}
+
+.ctm-stats {
+  font-family: var(--vscode-editor-font-family);
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+
+.ctm-stat-add {
+  color: var(--ctm-added-fg);
+}
+
+.ctm-stat-del {
+  color: var(--ctm-removed-fg);
+}
+
+.ctm-path {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ctm-card-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 24px;
+  color: var(--ctm-muted);
+}
+
+/* ---- code view -------------------------------------------------------------------------- */
+.ctm-code {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  font-family: var(--vscode-editor-font-family, monospace);
+  font-size: var(--vscode-editor-font-size, 13px);
+  line-height: var(--ctm-row-height);
+  tab-size: 4;
+}
+
+.ctm-code-spacer {
+  position: relative;
+  min-width: 100%;
+  width: max-content;
+}
+
+.ctm-code-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.ctm-row {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--ctm-row-height);
+  display: flex;
+  align-items: stretch;
+  white-space: pre;
+  will-change: transform;
+}
+
+.ctm-gutter {
+  flex: 0 0 auto;
+  width: calc(var(--ctm-gutter-chars) * 1ch + 16px);
+  padding-right: 8px;
+  text-align: right;
+  color: var(--vscode-editorLineNumber-foreground);
+  user-select: none;
+  position: sticky;
+  left: 0;
+  background: var(--ctm-card-bg);
+}
+
+.ctm-marker {
+  flex: 0 0 auto;
+  width: 1.4ch;
+  text-align: center;
+  user-select: none;
+  color: var(--ctm-muted);
+  position: sticky;
+  left: calc(var(--ctm-gutter-chars) * 1ch + 16px);
+  background: inherit;
+}
+
+.ctm-text {
+  flex: 1 1 auto;
+  padding-right: 16px;
+}
+
+.ctm-row-added {
+  background: var(--ctm-added-bg);
+}
+
+.ctm-row-added .ctm-marker {
+  color: var(--ctm-added-fg);
+  font-weight: bold;
+}
+
+.ctm-row-ghost {
+  background: var(--ctm-removed-bg);
+  opacity: 0.75;
+}
+
+.ctm-row-ghost .ctm-text {
+  text-decoration: line-through;
+  text-decoration-color: var(--ctm-removed-fg);
+  opacity: 0.8;
+}
+
+.ctm-row-ghost .ctm-marker {
+  color: var(--ctm-removed-fg);
+  font-weight: bold;
+}
+
+.ctm-row-added .ctm-gutter,
+.ctm-row-ghost .ctm-gutter {
+  background: transparent;
+}
+
+/* ---- states ----------------------------------------------------------------------------- */
+.ctm-loading,
+.ctm-empty {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 32px;
+  text-align: center;
+  color: var(--ctm-muted);
+  max-width: 460px;
+}
+
+.ctm-loading {
+  flex-direction: row;
+}
+
+.ctm-empty h2 {
+  margin: 4px 0 0;
+  color: var(--vscode-foreground);
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+.ctm-empty p {
+  margin: 0;
+}
+
+.ctm-empty-icon {
+  font-size: 32px !important;
+}
+
+.ctm-empty-detail {
+  font-family: var(--vscode-editor-font-family);
+  font-size: 0.85em;
+  opacity: 0.8;
+  word-break: break-word;
+}
+
+.ctm-empty-actions {
+  margin-top: 8px;
+}
+
+/* ---- high contrast ---------------------------------------------------------------------- */
+body.vscode-high-contrast .ctm-row-added,
+body.vscode-high-contrast-light .ctm-row-added {
+  outline: 1px dashed var(--ctm-added-fg);
+  outline-offset: -1px;
+}
+
+body.vscode-high-contrast .ctm-row-ghost,
+body.vscode-high-contrast-light .ctm-row-ghost {
+  outline: 1px dashed var(--ctm-removed-fg);
+  outline-offset: -1px;
 }
