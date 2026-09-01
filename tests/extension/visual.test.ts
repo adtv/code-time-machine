@@ -146,6 +146,31 @@ const CARDS_SCRIPT = `(() => {
     await vscode.commands.executeCommand('codeTimeMachine.previousRevision');
     await sleep(900);
     await shot('03-older-1');
+
+    // Alt + wheel (dispatched inside the webview) must travel one revision older.
+    const before = api.getSessionSnapshot(uri)?.activeIndex ?? -1;
+    await webview.evaluate(
+      `(() => { const doc = ${WEBVIEW_DOC}; const deck = doc.querySelector('.ctm-deck'); const W = doc.defaultView; deck.dispatchEvent(new W.WheelEvent('wheel', { deltaY: 120, deltaMode: 0, altKey: true, bubbles: true, cancelable: true })); return true; })()`,
+    );
+    await sleep(700);
+    assert.equal(
+      api.getSessionSnapshot(uri)?.activeIndex,
+      before + 1,
+      'Alt+wheel moved to the older revision',
+    );
+    // Keyboard: K goes back to the newer revision.
+    await webview.evaluate(
+      `(() => { const doc = ${WEBVIEW_DOC}; const W = doc.defaultView; W.dispatchEvent(new W.KeyboardEvent('keydown', { key: 'k', bubbles: true, cancelable: true })); return true; })()`,
+    );
+    await sleep(700);
+    assert.equal(api.getSessionSnapshot(uri)?.activeIndex, before, 'K moved to the newer revision');
+    // Timeline click selects a revision directly.
+    await webview.evaluate(
+      `(() => { const doc = ${WEBVIEW_DOC}; doc.querySelector('.ctm-timeline-item[data-index="5"]').click(); return true; })()`,
+    );
+    await sleep(700);
+    assert.equal(api.getSessionSnapshot(uri)?.activeIndex, 5, 'timeline click selected revision 5');
+    await shot('03b-timeline-click');
     const afterNav = await webview.evaluate<CardInfo[]>(CARDS_SCRIPT);
     for (const card of afterNav) {
       console.log(

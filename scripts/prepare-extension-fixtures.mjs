@@ -121,6 +121,8 @@ const workspace = {
   settings: {
     'git.openRepositoryInParentFolders': 'never',
     'workbench.startupEditor': 'none',
+    // Theme is window-scoped, so the workspace file is the reliable place for the harness.
+    'workbench.colorTheme': process.env.CTM_THEME ?? 'Dark Modern',
   },
 };
 writeFileSync(path.join(fixtures, 'multi.code-workspace'), JSON.stringify(workspace, null, 2));

@@ -88,3 +88,84 @@ added, and `diff/` + `mapping/` moved to `shared/` because they are pure and sha
   styles/fonts), no `innerHTML` with user content, all inbound messages validated, no network.
 
 Later phases append their decisions below.
+
+## 5. Runtime data flow (as implemented)
+
+```
+open command ─▶ PanelManager.open(uri)
+   ├─ RepositoryResolver (vscode.git API) → repoRoot, relPath, git path
+   ├─ HistoryPanel (webview, strict CSP, outbound queue until 'ready')
+   └─ HistorySession.start()
+        ├─ FileHistoryProvider.getHistory(maxCount)  →  RevisionMeta[]  (+ WT pseudo revision)
+        ├─ send init / history / active
+        └─ preload window: for index in [N, N+1, N-1, N+2, N-2, …]
+              content(N) + content(N+1) → highlight (worker) → diff + LineMap → send 'revision'
+webview: store (signals) → RevisionDeck (cards by slot) → CodeView (virtualised rows)
+         user scroll → ScrollSyncController → mapLineAcross → neighbours re-centred
+         Alt+wheel / keys / timeline / click → setActive → host preloads the new window
+```
+
+## 6. Webview design decisions
+
+- **Deck geometry.** Newer revisions stack _above_ the active card, older ones _below_; wheel
+  down / `J` / PageDown = older, matching a newest-first timeline. The newer card peeks by exactly
+  its header height and the older card by its footer height (`--ctm-peek`), so what peeks is
+  always readable (hash, subject, author, date, stats). One hidden card on each side lets cards
+  fade in/out instead of popping. Cards are keyed by revision id: the same DOM node moves between
+  slots, so a CSS transition (200 ms, `cubic-bezier(0.2, 0.8, 0.2, 1)`) animates the travel and
+  the card keeps its scroll position. `prefers-reduced-motion` and `vscode-reduce-motion`
+  disable transitions.
+- **Permanent footer.** Every card has a header and a footer of the same height (status line on
+  the active card, identity on background cards) and both are `flex: 0 0 auto`. This is not
+  cosmetic: all cards must have the same code-viewport height, otherwise the "centre line"
+  differs between a background card and the same card once it becomes active.
+- **Synchronized scrolling.** The controller keeps one logical anchor (revision index, content
+  line at the viewport centre, pixel offset). Background cards are re-centred on the mapped line
+  by chaining the adjacent `LineMap`s (`mapLineAcross`); when the active revision changes the
+  anchor is re-expressed in the new revision, so the incoming card does not jump. Mapping through
+  ghost rows is handled by `rowOfLine` tables in each card. Low confidence shows an
+  "≈ approximate alignment" badge; nothing is invented.
+- **Time-travel input.** Primary: modifier + wheel (`timeTravelModifier`, default Alt) with a
+  delta accumulator (mouse notches and trackpad inertia both work) and a cooldown for the
+  transition; plain wheel always scrolls the file. Secondary: J/K, PageUp/PageDown, Alt+↑/↓,
+  Alt+Home/End, Prev/Next buttons, timeline click/keyboard, clicking a peeking card. Ctrl+wheel
+  was rejected as primary because browsers/VS Code use it for zoom; Shift+wheel because many
+  devices map it to horizontal scroll.
+- **Rendering.** Preact + signals for the shell; the code area is an imperative virtualised
+  renderer (`CodeView`) that creates DOM with `textContent` only. Ghost rows are interleaved where
+  the removed lines used to be; added rows carry a `+` marker and the diff-editor background
+  tokens so the meaning does not depend on colour alone.
+
+## 7. Highlighting
+
+Shiki (fine-grained core + JavaScript regex engine, no WASM) runs in a **worker thread**
+(`dist/highlight-worker.js`, ~3 MB with grammars) so tokenising never blocks the extension host;
+`dist/extension.js` stays around 80 KB. Themes follow the VS Code theme _kind_ (Dark+, Light+,
+GitHub high-contrast variants) because the API does not expose the user's token colours. Output
+is a palette plus `[text, colourIndex, fontStyle?]` spans per line, cached by content hash.
+
+## 8. Testing strategy
+
+Unit (pure modules), integration (real git repositories created in temp dirs), webview
+(happy-dom + Testing Library), extension (`@vscode/test-cli` inside VS Code with a generated
+multi-root workspace) and a **visual harness** that drives the real window through the Chromium
+DevTools Protocol: screenshots plus DOM inspection of the webview, used to assert the scroll
+synchronisation numerically and to exercise Alt+wheel, keyboard and timeline clicks. See
+`docs/TESTING.md`.
+
+## 9. Security and privacy
+
+No network, no telemetry. Webview CSP is `default-src 'none'` with a per-load nonce for scripts
+and `${cspSource}` for styles/fonts; no `innerHTML` with repository content; every message from
+the webview is validated (`parseWebviewMessage`) and unknown messages are logged and dropped.
+All git invocations are read-only and run with `GIT_OPTIONAL_LOCKS=0`; the extension never
+writes to the repository or the file system.
+
+## 10. Known limitations
+
+- Highlight colours are VS Code's default themes, not the user's custom theme.
+- `git log --follow` also follows copies (a new file similar to an existing one inherits that
+  history, flagged `copied from …`) and can lose the trail on rename + heavy rewrite.
+- Moved blocks are delete + insert; alignment inside a moved block is approximate.
+- Staged vs unstaged is not distinguished yet (Working Tree vs HEAD only).
+- Binary files are detected but not rendered.

@@ -1,6 +1,15 @@
 import { useEffect, useRef } from 'preact/hooks';
 import { installWheelTimeTravel } from '../interaction/wheel';
-import { activeIndex, config, errors, navigate, revisions, setActive, views } from '../state/store';
+import {
+  activeIndex,
+  activeView,
+  config,
+  errors,
+  navigate,
+  revisions,
+  setActive,
+  views,
+} from '../state/store';
 import { RevisionCard } from './RevisionCard';
 
 /** Cards rendered around the active one: newer above, older below. */
@@ -50,11 +59,14 @@ export function RevisionDeck() {
       />,
     );
   }
+  // Simplified mode (very large files): no transitions, to keep interaction cheap.
+  const duration = activeView.value?.simplified ? 0 : config.value.animationDuration;
   return (
     <div
       class="ctm-deck"
       ref={deckRef}
-      style={{ '--ctm-anim-duration': `${config.value.animationDuration}ms` }}
+      data-simplified={activeView.value?.simplified ? 'true' : undefined}
+      style={{ '--ctm-anim-duration': `${duration}ms` }}
       role="region"
       aria-label="Revision deck"
     >
