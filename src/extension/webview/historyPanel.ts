@@ -6,7 +6,7 @@ import {
 } from '../../shared/messages/protocol';
 import type { Logger } from '../logging/logger';
 
-export const HISTORY_VIEW_TYPE = 'codeTimeMachine.history';
+export const HISTORY_VIEW_TYPE = 'fileTimeMachine.history';
 
 /**
  * Owns one WebviewPanel: HTML with a strict CSP, message validation, and an outbound queue that
@@ -124,7 +124,7 @@ export class HistoryPanel implements vscode.Disposable {
   <title>${escapeHtml(title)}</title>
 </head>
 <body>
-  <div id="root" role="application" aria-label="Visual Git History"></div>
+  <div id="root" role="application" aria-label="File Time Machine"></div>
   <script nonce="${nonce}" src="${asset('main.js')}"></script>
 </body>
 </html>`;

@@ -16,14 +16,14 @@ export function registerCommands(
         } catch (error) {
           logger.error(`command ${id} failed`, error);
           void vscode.window.showErrorMessage(
-            'Visual Git History: the command failed. See the output log for details.',
+            'File Time Machine: the command failed. See the output log for details.',
           );
         }
       }),
     );
   };
 
-  register('codeTimeMachine.openFileHistory', async (resource?: unknown) => {
+  register('fileTimeMachine.openFileHistory', async (resource?: unknown) => {
     const target = resolveTarget(resource);
     if (!target) {
       void vscode.window.showInformationMessage('Open a file to visualise its Git history.');
@@ -31,13 +31,13 @@ export function registerCommands(
     }
     await manager.open(target.uri, target.languageId);
   });
-  register('codeTimeMachine.previousRevision', () => manager.navigate(+1));
-  register('codeTimeMachine.nextRevision', () => manager.navigate(-1));
-  register('codeTimeMachine.goToRevision', () => manager.goToRevision());
-  register('codeTimeMachine.refresh', () => manager.refreshActive());
-  register('codeTimeMachine.openRevisionInEditor', () => manager.openRevisionInEditor());
-  register('codeTimeMachine.compareWithWorkingTree', () => manager.compareWithWorkingTree());
-  register('codeTimeMachine.showOutput', () => logger.show());
+  register('fileTimeMachine.previousRevision', () => manager.navigate(+1));
+  register('fileTimeMachine.nextRevision', () => manager.navigate(-1));
+  register('fileTimeMachine.goToRevision', () => manager.goToRevision());
+  register('fileTimeMachine.refresh', () => manager.refreshActive());
+  register('fileTimeMachine.openRevisionInEditor', () => manager.openRevisionInEditor());
+  register('fileTimeMachine.compareWithWorkingTree', () => manager.compareWithWorkingTree());
+  register('fileTimeMachine.showOutput', () => logger.show());
 }
 
 function resolveTarget(resource: unknown): { uri: vscode.Uri; languageId?: string } | undefined {

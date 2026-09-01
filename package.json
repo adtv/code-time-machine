@@ -1,8 +1,8 @@
 {
-  "name": "code-time-machine",
-  "displayName": "Code Time Machine — Visual Git History",
+  "name": "file-time-machine",
+  "displayName": "File Time Machine — Visual Git History",
   "description": "Travel through a file's Git history: layered revisions, synchronized line mapping and continuous navigation.",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "publisher": "adtv",
   "license": "MIT",
   "private": true,
@@ -40,188 +40,188 @@
   "contributes": {
     "commands": [
       {
-        "command": "codeTimeMachine.openFileHistory",
+        "command": "fileTimeMachine.openFileHistory",
         "title": "Open File History",
-        "category": "Visual Git History",
+        "category": "File Time Machine",
         "icon": "$(versions)"
       },
       {
-        "command": "codeTimeMachine.previousRevision",
+        "command": "fileTimeMachine.previousRevision",
         "title": "Previous Revision (Older)",
-        "category": "Visual Git History"
+        "category": "File Time Machine"
       },
       {
-        "command": "codeTimeMachine.nextRevision",
+        "command": "fileTimeMachine.nextRevision",
         "title": "Next Revision (Newer)",
-        "category": "Visual Git History"
+        "category": "File Time Machine"
       },
       {
-        "command": "codeTimeMachine.goToRevision",
+        "command": "fileTimeMachine.goToRevision",
         "title": "Go to Revision…",
-        "category": "Visual Git History"
+        "category": "File Time Machine"
       },
       {
-        "command": "codeTimeMachine.refresh",
+        "command": "fileTimeMachine.refresh",
         "title": "Refresh",
-        "category": "Visual Git History",
+        "category": "File Time Machine",
         "icon": "$(refresh)"
       },
       {
-        "command": "codeTimeMachine.openRevisionInEditor",
+        "command": "fileTimeMachine.openRevisionInEditor",
         "title": "Open Active Revision in Editor",
-        "category": "Visual Git History"
+        "category": "File Time Machine"
       },
       {
-        "command": "codeTimeMachine.compareWithWorkingTree",
+        "command": "fileTimeMachine.compareWithWorkingTree",
         "title": "Compare Active Revision with Working Tree",
-        "category": "Visual Git History"
+        "category": "File Time Machine"
       },
       {
-        "command": "codeTimeMachine.showOutput",
+        "command": "fileTimeMachine.showOutput",
         "title": "Show Output Log",
-        "category": "Visual Git History"
+        "category": "File Time Machine"
       }
     ],
     "menus": {
       "commandPalette": [
         {
-          "command": "codeTimeMachine.openFileHistory",
+          "command": "fileTimeMachine.openFileHistory",
           "when": "resourceScheme == file"
         },
         {
-          "command": "codeTimeMachine.previousRevision",
-          "when": "codeTimeMachine.hasSession"
+          "command": "fileTimeMachine.previousRevision",
+          "when": "fileTimeMachine.hasSession"
         },
         {
-          "command": "codeTimeMachine.nextRevision",
-          "when": "codeTimeMachine.hasSession"
+          "command": "fileTimeMachine.nextRevision",
+          "when": "fileTimeMachine.hasSession"
         },
         {
-          "command": "codeTimeMachine.goToRevision",
-          "when": "codeTimeMachine.hasSession"
+          "command": "fileTimeMachine.goToRevision",
+          "when": "fileTimeMachine.hasSession"
         },
         {
-          "command": "codeTimeMachine.refresh",
-          "when": "codeTimeMachine.hasSession"
+          "command": "fileTimeMachine.refresh",
+          "when": "fileTimeMachine.hasSession"
         },
         {
-          "command": "codeTimeMachine.openRevisionInEditor",
-          "when": "codeTimeMachine.hasSession"
+          "command": "fileTimeMachine.openRevisionInEditor",
+          "when": "fileTimeMachine.hasSession"
         },
         {
-          "command": "codeTimeMachine.compareWithWorkingTree",
-          "when": "codeTimeMachine.hasSession"
+          "command": "fileTimeMachine.compareWithWorkingTree",
+          "when": "fileTimeMachine.hasSession"
         }
       ],
       "editor/context": [
         {
-          "command": "codeTimeMachine.openFileHistory",
+          "command": "fileTimeMachine.openFileHistory",
           "when": "resourceScheme == file && !isInDiffEditor",
-          "group": "codeTimeMachine@1"
+          "group": "fileTimeMachine@1"
         }
       ],
       "editor/title": [
         {
-          "command": "codeTimeMachine.openFileHistory",
+          "command": "fileTimeMachine.openFileHistory",
           "when": "resourceScheme == file && !isInDiffEditor",
           "group": "navigation@50"
         },
         {
-          "command": "codeTimeMachine.refresh",
-          "when": "activeWebviewPanelId == codeTimeMachine.history",
+          "command": "fileTimeMachine.refresh",
+          "when": "activeWebviewPanelId == fileTimeMachine.history",
           "group": "navigation@1"
         }
       ],
       "explorer/context": [
         {
-          "command": "codeTimeMachine.openFileHistory",
+          "command": "fileTimeMachine.openFileHistory",
           "when": "resourceScheme == file && !explorerResourceIsFolder",
-          "group": "codeTimeMachine@1"
+          "group": "fileTimeMachine@1"
         }
       ],
       "editor/title/context": [
         {
-          "command": "codeTimeMachine.openFileHistory",
+          "command": "fileTimeMachine.openFileHistory",
           "when": "resourceScheme == file",
-          "group": "codeTimeMachine@1"
+          "group": "fileTimeMachine@1"
         }
       ]
     },
     "keybindings": [
       {
-        "command": "codeTimeMachine.openFileHistory",
+        "command": "fileTimeMachine.openFileHistory",
         "key": "ctrl+alt+h",
         "mac": "cmd+alt+h",
         "when": "editorTextFocus && resourceScheme == file"
       },
       {
-        "command": "codeTimeMachine.previousRevision",
+        "command": "fileTimeMachine.previousRevision",
         "key": "alt+down",
-        "when": "activeWebviewPanelId == codeTimeMachine.history"
+        "when": "activeWebviewPanelId == fileTimeMachine.history"
       },
       {
-        "command": "codeTimeMachine.nextRevision",
+        "command": "fileTimeMachine.nextRevision",
         "key": "alt+up",
-        "when": "activeWebviewPanelId == codeTimeMachine.history"
+        "when": "activeWebviewPanelId == fileTimeMachine.history"
       }
     ],
     "configuration": {
-      "title": "Visual Git History",
+      "title": "File Time Machine",
       "properties": {
-        "visualGitHistory.maxCommits": {
+        "fileTimeMachine.maxCommits": {
           "type": "number",
           "default": 500,
           "minimum": 10,
           "maximum": 10000,
           "description": "Maximum number of commits loaded for a file's history (loaded in pages)."
         },
-        "visualGitHistory.preloadRevisions": {
+        "fileTimeMachine.preloadRevisions": {
           "type": "number",
           "default": 3,
           "minimum": 1,
           "maximum": 8,
           "description": "How many revisions before and after the active one are preloaded."
         },
-        "visualGitHistory.animationDuration": {
+        "fileTimeMachine.animationDuration": {
           "type": "number",
           "default": 200,
           "minimum": 0,
           "maximum": 1000,
           "description": "Duration in milliseconds of the transition between revisions. Ignored when reduced motion is enabled."
         },
-        "visualGitHistory.showGhostLines": {
+        "fileTimeMachine.showGhostLines": {
           "type": "boolean",
           "default": true,
           "description": "Show lines removed by the active revision as faded ghost lines."
         },
-        "visualGitHistory.showMinimap": {
+        "fileTimeMachine.showMinimap": {
           "type": "boolean",
           "default": true,
           "description": "Show a minimap on the active revision (click or drag to scroll; added and removed lines are tinted)."
         },
-        "visualGitHistory.followRenames": {
+        "fileTimeMachine.followRenames": {
           "type": "boolean",
           "default": true,
           "description": "Follow the file across renames (git log --follow)."
         },
-        "visualGitHistory.ignoreWhitespace": {
+        "fileTimeMachine.ignoreWhitespace": {
           "type": "boolean",
           "default": false,
           "description": "Ignore whitespace-only differences when diffing and mapping lines between revisions."
         },
-        "visualGitHistory.maxFileSizeKB": {
+        "fileTimeMachine.maxFileSizeKB": {
           "type": "number",
           "default": 2048,
           "minimum": 64,
           "description": "Revisions larger than this size (KB) are not rendered."
         },
-        "visualGitHistory.maxRenderedLines": {
+        "fileTimeMachine.maxRenderedLines": {
           "type": "number",
           "default": 8000,
           "minimum": 500,
           "description": "Files with more lines than this open in simplified mode (no animation, no highlighting)."
         },
-        "visualGitHistory.timeTravelModifier": {
+        "fileTimeMachine.timeTravelModifier": {
           "type": "string",
           "enum": [
             "alt",

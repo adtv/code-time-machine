@@ -117,7 +117,7 @@ export class Minimap {
   ) {
     this.ctx = canvas.getContext('2d');
     this.colors = readColors();
-    canvas.classList.add('ctm-minimap');
+    canvas.classList.add('ftm-minimap');
     canvas.setAttribute('aria-hidden', 'true');
     this.unsubscribe = view.subscribeScroll(() => this.scheduleRender());
     canvas.addEventListener('mousedown', this.onMouseDown);
@@ -408,12 +408,12 @@ export function readMinimapColors(element: Element): MinimapColors {
   };
   return {
     foreground: read('--vscode-editor-foreground', '#cccccc'),
-    added: read('--ctm-added-fg', '#81b88b'),
-    removed: read('--ctm-removed-fg', '#c74e39'),
-    addedMarker: read('--vscode-minimapGutter-addedBackground', read('--ctm-added-fg', '#81b88b')),
+    added: read('--ftm-added-fg', '#81b88b'),
+    removed: read('--ftm-removed-fg', '#c74e39'),
+    addedMarker: read('--vscode-minimapGutter-addedBackground', read('--ftm-added-fg', '#81b88b')),
     removedMarker: read(
       '--vscode-minimapGutter-deletedBackground',
-      read('--ctm-removed-fg', '#c74e39'),
+      read('--ftm-removed-fg', '#c74e39'),
     ),
     slider: read('--vscode-minimapSlider-background', 'rgba(121, 121, 121, 0.2)'),
     sliderHover: read('--vscode-minimapSlider-hoverBackground', 'rgba(100, 100, 100, 0.35)'),

@@ -20,7 +20,7 @@ export interface CodeTimeMachineApi {
 export function activate(context: vscode.ExtensionContext): CodeTimeMachineApi {
   const logger = new OutputChannelLogger();
   context.subscriptions.push(logger);
-  logger.info('Code Time Machine activated');
+  logger.info('File Time Machine activated');
 
   const resolver = new RepositoryResolver(logger);
   const highlighter = new WorkerHighlightService(

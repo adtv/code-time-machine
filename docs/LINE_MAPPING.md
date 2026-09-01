@@ -1,6 +1,6 @@
 # Line Mapping
 
-How Code Time Machine keeps the _same logical region_ of a file aligned across revisions while
+How File Time Machine keeps the _same logical region_ of a file aligned across revisions while
 the user scrolls, even when lines were inserted, deleted or rewritten in between.
 
 Source: `src/shared/diff/lineDiff.ts` (diff) and `src/shared/mapping/lineMap.ts` (mapping).
@@ -32,7 +32,7 @@ composeLineMaps(ab, bc)  →  ac                                 (cards two step
 ## 3. Diff algorithm
 
 1. **Normalisation.** A trailing `\r` is always removed, so CRLF↔LF conversions never appear as
-   changes. With `visualGitHistory.ignoreWhitespace`, lines are trimmed and internal whitespace
+   changes. With `fileTimeMachine.ignoreWhitespace`, lines are trimmed and internal whitespace
    collapsed before comparison.
 2. **Interning.** Each distinct normalised line gets an integer id; the rest of the algorithm
    compares integers only.

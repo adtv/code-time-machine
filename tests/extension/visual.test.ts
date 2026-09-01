@@ -1,5 +1,5 @@
 /**
- * Visual harness: only runs when CTM_VISUAL=1. Opens the demo file's history in the real VS Code
+ * Visual harness: only runs when FTM_VISUAL=1. Opens the demo file's history in the real VS Code
  * window, captures screenshots through the Chromium DevTools Protocol and inspects the live
  * webview DOM (VS Code is launched with --remote-debugging-port, see .vscode-test.mjs).
  * Skipped in CI.
@@ -11,9 +11,9 @@ import * as vscode from 'vscode';
 import type { CodeTimeMachineApi } from '../../src/extension/extension';
 import { WEBVIEW_DOC, connectWebview, connectWorkbench, listTargets, type CdpSession } from './cdp';
 
-const enabled = process.env['CTM_VISUAL'] === '1';
-const cdpPort = process.env['CTM_CDP_PORT'] ?? '9333';
-const outDir = process.env['CTM_SHOT_DIR'] ?? path.join(process.cwd(), '.vscode-test', 'shots');
+const enabled = process.env['FTM_VISUAL'] === '1';
+const cdpPort = process.env['FTM_CDP_PORT'] ?? '9333';
+const outDir = process.env['FTM_SHOT_DIR'] ?? path.join(process.cwd(), '.vscode-test', 'shots');
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -43,22 +43,22 @@ interface CardInfo {
 const CARDS_SCRIPT = `(() => {
   const doc = ${WEBVIEW_DOC};
   const rowHeight = 20;
-  return [...doc.querySelectorAll('.ctm-card')].map((card) => {
+  return [...doc.querySelectorAll('.ftm-card')].map((card) => {
     const rect = card.getBoundingClientRect();
-    const header = card.querySelector('.ctm-card-header').getBoundingClientRect();
-    const footerEl = card.querySelector('.ctm-card-footer');
+    const header = card.querySelector('.ftm-card-header').getBoundingClientRect();
+    const footerEl = card.querySelector('.ftm-card-footer');
     const footer = footerEl.getBoundingClientRect();
-    const code = card.querySelector('.ctm-code');
+    const code = card.querySelector('.ftm-code');
     let centerText = null;
     let scrollTop = -1;
     if (code) {
       scrollTop = code.scrollTop;
       const centerY = code.scrollTop + code.clientHeight / 2;
       const rowIndex = Math.floor(centerY / rowHeight);
-      for (const row of code.querySelectorAll('.ctm-row')) {
+      for (const row of code.querySelectorAll('.ftm-row')) {
         const m = /translateY\\((\\d+)px\\)/.exec(row.style.transform);
         if (m && Number(m[1]) === rowIndex * rowHeight) {
-          centerText = row.querySelector('.ctm-gutter').textContent + ': ' + row.querySelector('.ctm-text').textContent;
+          centerText = row.querySelector('.ftm-gutter').textContent + ': ' + row.querySelector('.ftm-text').textContent;
         }
       }
     }
@@ -69,7 +69,7 @@ const CARDS_SCRIPT = `(() => {
       footer: { top: footer.top, bottom: footer.bottom, display: getComputedStyle(footerEl).display },
       scrollTop,
       centerText,
-      approx: code ? code.classList.contains('ctm-code-approximate') : false,
+      approx: code ? code.classList.contains('ftm-code-approximate') : false,
     };
   });
 })()`;
@@ -80,7 +80,7 @@ const CARDS_SCRIPT = `(() => {
 
   before(async function () {
     this.timeout(60_000);
-    const extension = vscode.extensions.getExtension<CodeTimeMachineApi>('adtv.code-time-machine');
+    const extension = vscode.extensions.getExtension<CodeTimeMachineApi>('adtv.file-time-machine');
     if (!extension) {
       throw new Error('extension not found');
     }
@@ -120,8 +120,8 @@ const CARDS_SCRIPT = `(() => {
     );
     webview = await connectWebview(
       cdpPort,
-      'adtv.code-time-machine',
-      `(() => { const doc = ${WEBVIEW_DOC}; const name = doc.querySelector('.ctm-toolbar-name'); return !!name && name.textContent === 'UserService.ts' && !!doc.querySelector('.ctm-card[data-slot="0"]'); })()`,
+      'adtv.file-time-machine',
+      `(() => { const doc = ${WEBVIEW_DOC}; const name = doc.querySelector('.ftm-toolbar-name'); return !!name && name.textContent === 'UserService.ts' && !!doc.querySelector('.ftm-card[data-slot="0"]'); })()`,
     );
     const cards = await webview.evaluate<CardInfo[]>(CARDS_SCRIPT);
     console.log('[visual] cards:', JSON.stringify(cards, null, 1));
@@ -135,7 +135,7 @@ const CARDS_SCRIPT = `(() => {
 
     // Scroll the active card by ~600px and check the neighbours re-centre on the mapped line.
     await webview.evaluate(
-      `(() => { const doc = ${WEBVIEW_DOC}; const code = doc.querySelector('.ctm-card[data-slot="0"] .ctm-code'); code.scrollTop = 600; return code.scrollTop; })()`,
+      `(() => { const doc = ${WEBVIEW_DOC}; const code = doc.querySelector('.ftm-card[data-slot="0"] .ftm-code'); code.scrollTop = 600; return code.scrollTop; })()`,
     );
     await sleep(400);
     const afterScroll = await webview.evaluate<CardInfo[]>(CARDS_SCRIPT);
@@ -151,14 +151,14 @@ const CARDS_SCRIPT = `(() => {
     assert.ok(activeAfter.scrollTop >= 590, 'active card scrolled');
     assert.ok(olderAfter.scrollTop > 0, 'older card followed the active card');
 
-    await vscode.commands.executeCommand('codeTimeMachine.previousRevision');
+    await vscode.commands.executeCommand('fileTimeMachine.previousRevision');
     await sleep(900);
     await shot('03-older-1');
 
     // Alt + wheel (dispatched inside the webview) must travel one revision older.
     const before = api.getSessionSnapshot(uri)?.activeIndex ?? -1;
     await webview.evaluate(
-      `(() => { const doc = ${WEBVIEW_DOC}; const deck = doc.querySelector('.ctm-deck'); const W = doc.defaultView; deck.dispatchEvent(new W.WheelEvent('wheel', { deltaY: 120, deltaMode: 0, altKey: true, bubbles: true, cancelable: true })); return true; })()`,
+      `(() => { const doc = ${WEBVIEW_DOC}; const deck = doc.querySelector('.ftm-deck'); const W = doc.defaultView; deck.dispatchEvent(new W.WheelEvent('wheel', { deltaY: 120, deltaMode: 0, altKey: true, bubbles: true, cancelable: true })); return true; })()`,
     );
     await sleep(700);
     assert.equal(
@@ -174,7 +174,7 @@ const CARDS_SCRIPT = `(() => {
     assert.equal(api.getSessionSnapshot(uri)?.activeIndex, before, 'K moved to the newer revision');
     // Timeline click selects a revision directly.
     await webview.evaluate(
-      `(() => { const doc = ${WEBVIEW_DOC}; doc.querySelector('.ctm-timeline-item[data-index="5"]').click(); return true; })()`,
+      `(() => { const doc = ${WEBVIEW_DOC}; doc.querySelector('.ftm-timeline-item[data-index="5"]').click(); return true; })()`,
     );
     await sleep(700);
     assert.equal(api.getSessionSnapshot(uri)?.activeIndex, 5, 'timeline click selected revision 5');
@@ -182,10 +182,10 @@ const CARDS_SCRIPT = `(() => {
 
     // Change navigation: revision 2 ("Formatting: double quotes") has several change blocks.
     await webview.evaluate(
-      `(() => { const doc = ${WEBVIEW_DOC}; doc.querySelector('.ctm-timeline-item[data-index="2"]').click(); return true; })()`,
+      `(() => { const doc = ${WEBVIEW_DOC}; doc.querySelector('.ftm-timeline-item[data-index="2"]').click(); return true; })()`,
     );
     await sleep(900);
-    const readNav = `(() => { const doc = ${WEBVIEW_DOC}; const active = doc.querySelector('.ctm-card[data-slot="0"]'); const count = active.querySelector('.ctm-change-count'); return JSON.stringify({ count: count ? count.textContent : null, scrollTop: active.querySelector('.ctm-code').scrollTop }); })()`;
+    const readNav = `(() => { const doc = ${WEBVIEW_DOC}; const active = doc.querySelector('.ftm-card[data-slot="0"]'); const count = active.querySelector('.ftm-change-count'); return JSON.stringify({ count: count ? count.textContent : null, scrollTop: active.querySelector('.ftm-code').scrollTop }); })()`;
     const navBefore = JSON.parse(await webview.evaluate<string>(readNav)) as {
       count: string | null;
       scrollTop: number;
@@ -205,7 +205,7 @@ const CARDS_SCRIPT = `(() => {
     assert.notEqual(navAfter.scrollTop, navBefore.scrollTop, 'N moved the code to a change block');
     // At the very bottom the counter must reach total/total.
     await webview.evaluate(
-      `(() => { const doc = ${WEBVIEW_DOC}; const code = doc.querySelector('.ctm-card[data-slot="0"] .ctm-code'); code.scrollTop = code.scrollHeight; return code.scrollTop; })()`,
+      `(() => { const doc = ${WEBVIEW_DOC}; const code = doc.querySelector('.ftm-card[data-slot="0"] .ftm-code'); code.scrollTop = code.scrollHeight; return code.scrollTop; })()`,
     );
     await sleep(400);
     const navBottom = JSON.parse(await webview.evaluate<string>(readNav)) as {
@@ -221,7 +221,7 @@ const CARDS_SCRIPT = `(() => {
       );
     }
     for (let i = 0; i < 11; i++) {
-      await vscode.commands.executeCommand('codeTimeMachine.previousRevision');
+      await vscode.commands.executeCommand('fileTimeMachine.previousRevision');
     }
     await api.waitForIdle(uri);
     await sleep(900);
@@ -230,12 +230,12 @@ const CARDS_SCRIPT = `(() => {
     // Minimap: present on the active card only; clicking near its bottom scrolls the code.
     // Use the working-tree revision (68 lines) so the code area is actually scrollable.
     await webview.evaluate(
-      `(() => { const doc = ${WEBVIEW_DOC}; doc.querySelector('.ctm-timeline-item[data-index="0"]').click(); return true; })()`,
+      `(() => { const doc = ${WEBVIEW_DOC}; doc.querySelector('.ftm-timeline-item[data-index="0"]').click(); return true; })()`,
     );
     await sleep(900);
     await shot('04b-minimap');
     const minimapInfo = await webview.evaluate<string>(
-      `(() => { const doc = ${WEBVIEW_DOC}; const active = doc.querySelector('.ctm-card[data-slot="0"]'); const canvas = active.querySelector('.ctm-minimap'); const others = doc.querySelectorAll('.ctm-card:not([data-slot="0"]) .ctm-minimap').length; if (!canvas) return JSON.stringify({ canvas: false, others }); const r = canvas.getBoundingClientRect(); const code = active.querySelector('.ctm-code'); const before = code.scrollTop; const W = doc.defaultView; canvas.dispatchEvent(new W.MouseEvent('mousedown', { clientX: r.left + 10, clientY: r.bottom - 5, button: 0, bubbles: true })); W.dispatchEvent(new W.MouseEvent('mouseup', { bubbles: true })); return JSON.stringify({ canvas: true, width: r.width, height: r.height, others, rows: code.querySelectorAll('.ctm-row').length, scrollHeight: code.scrollHeight, clientHeight: code.clientHeight, before, after: code.scrollTop }); })()`,
+      `(() => { const doc = ${WEBVIEW_DOC}; const active = doc.querySelector('.ftm-card[data-slot="0"]'); const canvas = active.querySelector('.ftm-minimap'); const others = doc.querySelectorAll('.ftm-card:not([data-slot="0"]) .ftm-minimap').length; if (!canvas) return JSON.stringify({ canvas: false, others }); const r = canvas.getBoundingClientRect(); const code = active.querySelector('.ftm-code'); const before = code.scrollTop; const W = doc.defaultView; canvas.dispatchEvent(new W.MouseEvent('mousedown', { clientX: r.left + 10, clientY: r.bottom - 5, button: 0, bubbles: true })); W.dispatchEvent(new W.MouseEvent('mouseup', { bubbles: true })); return JSON.stringify({ canvas: true, width: r.width, height: r.height, others, rows: code.querySelectorAll('.ftm-row').length, scrollHeight: code.scrollHeight, clientHeight: code.clientHeight, before, after: code.scrollTop }); })()`,
     );
     console.log(`[visual] minimap: ${minimapInfo}`);
     const parsedMinimap = JSON.parse(minimapInfo) as {
@@ -279,11 +279,11 @@ const CARDS_SCRIPT = `(() => {
       await sleep(800);
       // Sticky day headers must paint above the dots: scroll the list so items pass under one.
       await webview.evaluate(
-        `(() => { const doc = ${WEBVIEW_DOC}; const list = doc.querySelector('.ctm-timeline-list'); list.scrollTop = 130; return list.scrollTop; })()`,
+        `(() => { const doc = ${WEBVIEW_DOC}; const list = doc.querySelector('.ftm-timeline-list'); list.scrollTop = 130; return list.scrollTop; })()`,
       );
       await sleep(400);
       const sticky = await webview.evaluate<string>(
-        `(() => { const doc = ${WEBVIEW_DOC}; const list = doc.querySelector('.ctm-timeline-list'); const lr = list.getBoundingClientRect(); const days = [...doc.querySelectorAll('.ctm-timeline-day')]; const items = [...doc.querySelectorAll('.ctm-timeline-item')]; const near = (el) => { const r = el.getBoundingClientRect(); return { top: +r.top.toFixed(1), bottom: +r.bottom.toFixed(1), z: getComputedStyle(el).zIndex, pos: getComputedStyle(el).position, text: (el.textContent || '').trim().slice(0, 28) }; }; return JSON.stringify({ list: { top: +lr.top.toFixed(1), padTop: getComputedStyle(list).paddingTop }, days: days.slice(0, 3).map(near), items: items.slice(0, 4).map(near) }); })()`,
+        `(() => { const doc = ${WEBVIEW_DOC}; const list = doc.querySelector('.ftm-timeline-list'); const lr = list.getBoundingClientRect(); const days = [...doc.querySelectorAll('.ftm-timeline-day')]; const items = [...doc.querySelectorAll('.ftm-timeline-item')]; const near = (el) => { const r = el.getBoundingClientRect(); return { top: +r.top.toFixed(1), bottom: +r.bottom.toFixed(1), z: getComputedStyle(el).zIndex, pos: getComputedStyle(el).position, text: (el.textContent || '').trim().slice(0, 28) }; }; return JSON.stringify({ list: { top: +lr.top.toFixed(1), padTop: getComputedStyle(list).paddingTop }, days: days.slice(0, 3).map(near), items: items.slice(0, 4).map(near) }); })()`,
       );
       console.log(`[visual] sticky geometry: ${sticky}`);
       writeFileSync(path.join(outDir, '07-timeline-scrolled.png'), await workbench.screenshot());
@@ -291,7 +291,7 @@ const CARDS_SCRIPT = `(() => {
     } finally {
       workbench.close();
     }
-    const hold = Number(process.env['CTM_VISUAL_HOLD'] ?? '0');
+    const hold = Number(process.env['FTM_VISUAL_HOLD'] ?? '0');
     if (hold > 0) {
       await sleep(hold);
     }

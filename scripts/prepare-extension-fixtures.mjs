@@ -100,7 +100,7 @@ writeFileSync(
   path.join(userDir, 'settings.json'),
   JSON.stringify(
     {
-      'workbench.colorTheme': process.env.CTM_THEME ?? 'Dark Modern',
+      'workbench.colorTheme': process.env.FTM_THEME ?? 'Dark Modern',
       // Otherwise VS Code swaps a high-contrast theme back to the preferred dark theme when the OS
       // itself is not in high-contrast mode.
       'window.autoDetectHighContrast': false,
@@ -126,7 +126,7 @@ const workspace = {
     'git.openRepositoryInParentFolders': 'never',
     'workbench.startupEditor': 'none',
     // Theme is window-scoped, so the workspace file is the reliable place for the harness.
-    'workbench.colorTheme': process.env.CTM_THEME ?? 'Dark Modern',
+    'workbench.colorTheme': process.env.FTM_THEME ?? 'Dark Modern',
   },
 };
 writeFileSync(path.join(fixtures, 'multi.code-workspace'), JSON.stringify(workspace, null, 2));

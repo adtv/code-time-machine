@@ -1,13 +1,13 @@
 :root {
-  --ctm-row-height: 20px;
-  --ctm-gutter-chars: 3;
-  --ctm-added-bg: var(--vscode-diffEditor-insertedLineBackground, rgba(155, 185, 85, 0.2));
-  --ctm-removed-bg: var(--vscode-diffEditor-removedLineBackground, rgba(255, 0, 0, 0.2));
-  --ctm-added-fg: var(--vscode-gitDecoration-addedResourceForeground, #81b88b);
-  --ctm-removed-fg: var(--vscode-gitDecoration-deletedResourceForeground, #c74e39);
-  --ctm-border: var(--vscode-panel-border, var(--vscode-widget-border, rgba(128, 128, 128, 0.35)));
-  --ctm-card-bg: var(--vscode-editor-background);
-  --ctm-muted: var(--vscode-descriptionForeground);
+  --ftm-row-height: 20px;
+  --ftm-gutter-chars: 3;
+  --ftm-added-bg: var(--vscode-diffEditor-insertedLineBackground, rgba(155, 185, 85, 0.2));
+  --ftm-removed-bg: var(--vscode-diffEditor-removedLineBackground, rgba(255, 0, 0, 0.2));
+  --ftm-added-fg: var(--vscode-gitDecoration-addedResourceForeground, #81b88b);
+  --ftm-removed-fg: var(--vscode-gitDecoration-deletedResourceForeground, #c74e39);
+  --ftm-border: var(--vscode-panel-border, var(--vscode-widget-border, rgba(128, 128, 128, 0.35)));
+  --ftm-card-bg: var(--vscode-editor-background);
+  --ftm-muted: var(--vscode-descriptionForeground);
 }
 
 * {
@@ -33,58 +33,58 @@ button {
   color: inherit;
 }
 
-.ctm-app {
+.ftm-app {
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
 
 /* ---- toolbar ---------------------------------------------------------------------------- */
-.ctm-toolbar {
+.ftm-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   padding: 6px 12px;
-  border-bottom: 1px solid var(--ctm-border);
+  border-bottom: 1px solid var(--ftm-border);
   background: var(--vscode-editorGroupHeader-tabsBackground, var(--vscode-editor-background));
   flex: 0 0 auto;
 }
 
-.ctm-toolbar-file {
+.ftm-toolbar-file {
   display: flex;
   align-items: center;
   gap: 8px;
   min-width: 0;
 }
 
-.ctm-toolbar-name {
+.ftm-toolbar-name {
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.ctm-toolbar-repo {
-  color: var(--ctm-muted);
+.ftm-toolbar-repo {
+  color: var(--ftm-muted);
   font-size: 0.9em;
 }
 
-.ctm-toolbar-nav {
+.ftm-toolbar-nav {
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.ctm-toolbar-position {
+.ftm-toolbar-position {
   min-width: 5.5em;
   text-align: center;
   font-variant-numeric: tabular-nums;
-  color: var(--ctm-muted);
+  color: var(--ftm-muted);
 }
 
-.ctm-icon-button,
-.ctm-button {
+.ftm-icon-button,
+.ftm-button {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -95,43 +95,43 @@ button {
   cursor: pointer;
 }
 
-.ctm-icon-button:hover:not(:disabled),
-.ctm-button:hover:not(:disabled) {
+.ftm-icon-button:hover:not(:disabled),
+.ftm-button:hover:not(:disabled) {
   background: var(--vscode-toolbar-hoverBackground);
 }
 
-.ctm-icon-button:focus-visible,
-.ctm-button:focus-visible,
-.ctm-hash:focus-visible,
-.ctm-code:focus-visible {
+.ftm-icon-button:focus-visible,
+.ftm-button:focus-visible,
+.ftm-hash:focus-visible,
+.ftm-code:focus-visible {
   outline: 1px solid var(--vscode-focusBorder);
   outline-offset: -1px;
 }
 
-.ctm-icon-button:disabled {
+.ftm-icon-button:disabled {
   opacity: 0.4;
   cursor: default;
 }
 
-.ctm-button {
+.ftm-button {
   border-color: var(--vscode-button-border, transparent);
   background: var(--vscode-button-secondaryBackground);
   color: var(--vscode-button-secondaryForeground);
 }
 
-.ctm-button:hover:not(:disabled) {
+.ftm-button:hover:not(:disabled) {
   background: var(--vscode-button-secondaryHoverBackground);
 }
 
 /* ---- main / deck ------------------------------------------------------------------------ */
-.ctm-main {
+.ftm-main {
   position: relative;
   flex: 1 1 auto;
   min-height: 0;
   display: flex;
 }
 
-.ctm-deck {
+.ftm-deck {
   position: relative;
   flex: 1 1 auto;
   min-width: 0;
@@ -140,32 +140,32 @@ button {
   flex-direction: column;
 }
 
-.ctm-card {
+.ftm-card {
   position: relative;
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
-  border: 1px solid var(--ctm-border);
+  border: 1px solid var(--ftm-border);
   border-radius: 6px;
-  background: var(--ctm-card-bg);
+  background: var(--ftm-card-bg);
   overflow: hidden;
 }
 
-.ctm-card-header {
+.ftm-card-header {
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
   justify-content: center;
   gap: 2px;
-  height: var(--ctm-peek, 42px);
+  height: var(--ftm-peek, 42px);
   padding: 4px 12px;
-  border-bottom: 1px solid var(--ctm-border);
+  border-bottom: 1px solid var(--ftm-border);
   background: var(--vscode-sideBarSectionHeader-background, transparent);
 }
 
-.ctm-card-line1,
-.ctm-card-line2 {
+.ftm-card-line1,
+.ftm-card-line2 {
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
@@ -174,25 +174,25 @@ button {
   overflow: hidden;
 }
 
-.ctm-card-line1 > *,
-.ctm-card-line2 > * {
+.ftm-card-line1 > *,
+.ftm-card-line2 > * {
   min-width: 0;
 }
 
-.ctm-hash,
-.ctm-badges,
-.ctm-stats,
-.ctm-actions,
-.ctm-dot {
+.ftm-hash,
+.ftm-badges,
+.ftm-stats,
+.ftm-actions,
+.ftm-dot {
   flex: 0 0 auto;
 }
 
-.ctm-card-line2 {
-  color: var(--ctm-muted);
+.ftm-card-line2 {
+  color: var(--ftm-muted);
   font-size: 0.92em;
 }
 
-.ctm-hash {
+.ftm-hash {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -200,20 +200,20 @@ button {
   font-size: 0.95em;
   padding: 1px 6px;
   border-radius: 4px;
-  border: 1px solid var(--ctm-border);
+  border: 1px solid var(--ftm-border);
   background: var(--vscode-badge-background);
   color: var(--vscode-badge-foreground);
   cursor: pointer;
 }
 
-.ctm-hash-wt {
+.ftm-hash-wt {
   background: var(--vscode-editorInfo-foreground, #3794ff);
   color: var(--vscode-editor-background);
   border-color: transparent;
   cursor: default;
 }
 
-.ctm-subject {
+.ftm-subject {
   flex: 1 1 auto;
   min-width: 0;
   white-space: nowrap;
@@ -222,35 +222,35 @@ button {
   font-weight: 500;
 }
 
-.ctm-badges {
+.ftm-badges {
   display: inline-flex;
   gap: 4px;
 }
 
-.ctm-badge {
+.ftm-badge {
   font-size: 0.8em;
   padding: 0 6px;
   border-radius: 8px;
-  border: 1px solid var(--ctm-border);
-  color: var(--ctm-muted);
+  border: 1px solid var(--ftm-border);
+  color: var(--ftm-muted);
   white-space: nowrap;
 }
 
-.ctm-stats {
+.ftm-stats {
   font-family: var(--vscode-editor-font-family);
   font-size: 0.9em;
   white-space: nowrap;
 }
 
-.ctm-stat-add {
-  color: var(--ctm-added-fg);
+.ftm-stat-add {
+  color: var(--ftm-added-fg);
 }
 
-.ctm-stat-del {
-  color: var(--ctm-removed-fg);
+.ftm-stat-del {
+  color: var(--ftm-removed-fg);
 }
 
-.ctm-path-group {
+.ftm-path-group {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -258,7 +258,7 @@ button {
   min-width: 0;
 }
 
-.ctm-path {
+.ftm-path {
   flex: 1 1 auto;
   min-width: 0;
   white-space: nowrap;
@@ -270,7 +270,7 @@ button {
   unicode-bidi: plaintext;
 }
 
-.ctm-author {
+.ftm-author {
   flex: 0 1 auto;
   min-width: 3ch;
   max-width: 45%;
@@ -279,115 +279,115 @@ button {
   text-overflow: ellipsis;
 }
 
-.ctm-date {
+.ftm-date {
   flex: 0 0 auto;
   white-space: nowrap;
 }
 
-.ctm-card-message {
+.ftm-card-message {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 24px;
-  color: var(--ctm-muted);
+  color: var(--ftm-muted);
 }
 
 /* ---- code view -------------------------------------------------------------------------- */
-.ctm-code {
+.ftm-code {
   position: relative;
   flex: 1 1 auto;
   min-height: 0;
   overflow: auto;
   font-family: var(--vscode-editor-font-family, monospace);
   font-size: var(--vscode-editor-font-size, 13px);
-  line-height: var(--ctm-row-height);
+  line-height: var(--ftm-row-height);
   tab-size: 4;
 }
 
-.ctm-code-spacer {
+.ftm-code-spacer {
   position: relative;
   min-width: 100%;
   width: max-content;
 }
 
-.ctm-code-layer {
+.ftm-code-layer {
   position: absolute;
   inset: 0;
 }
 
-.ctm-row {
+.ftm-row {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: var(--ctm-row-height);
+  height: var(--ftm-row-height);
   display: flex;
   align-items: stretch;
   white-space: pre;
   will-change: transform;
 }
 
-.ctm-gutter {
+.ftm-gutter {
   flex: 0 0 auto;
-  width: calc(var(--ctm-gutter-chars) * 1ch + 16px);
+  width: calc(var(--ftm-gutter-chars) * 1ch + 16px);
   padding-right: 8px;
   text-align: right;
   color: var(--vscode-editorLineNumber-foreground);
   user-select: none;
   position: sticky;
   left: 0;
-  background: var(--ctm-card-bg);
+  background: var(--ftm-card-bg);
 }
 
-.ctm-marker {
+.ftm-marker {
   flex: 0 0 auto;
   width: 1.4ch;
   text-align: center;
   user-select: none;
-  color: var(--ctm-muted);
+  color: var(--ftm-muted);
   position: sticky;
-  left: calc(var(--ctm-gutter-chars) * 1ch + 16px);
+  left: calc(var(--ftm-gutter-chars) * 1ch + 16px);
   background: inherit;
 }
 
-.ctm-text {
+.ftm-text {
   flex: 1 1 auto;
   padding-right: 16px;
 }
 
-.ctm-row-added {
-  background: var(--ctm-added-bg);
+.ftm-row-added {
+  background: var(--ftm-added-bg);
 }
 
-.ctm-row-added .ctm-marker {
-  color: var(--ctm-added-fg);
+.ftm-row-added .ftm-marker {
+  color: var(--ftm-added-fg);
   font-weight: bold;
 }
 
-.ctm-row-ghost {
-  background: var(--ctm-removed-bg);
+.ftm-row-ghost {
+  background: var(--ftm-removed-bg);
   opacity: 0.75;
 }
 
-.ctm-row-ghost .ctm-text {
+.ftm-row-ghost .ftm-text {
   text-decoration: line-through;
-  text-decoration-color: var(--ctm-removed-fg);
+  text-decoration-color: var(--ftm-removed-fg);
   opacity: 0.8;
 }
 
-.ctm-row-ghost .ctm-marker {
-  color: var(--ctm-removed-fg);
+.ftm-row-ghost .ftm-marker {
+  color: var(--ftm-removed-fg);
   font-weight: bold;
 }
 
-.ctm-row-added .ctm-gutter,
-.ctm-row-ghost .ctm-gutter {
+.ftm-row-added .ftm-gutter,
+.ftm-row-ghost .ftm-gutter {
   background: transparent;
 }
 
 /* ---- states ----------------------------------------------------------------------------- */
-.ctm-loading,
-.ctm-empty {
+.ftm-loading,
+.ftm-empty {
   margin: auto;
   display: flex;
   flex-direction: column;
@@ -395,50 +395,50 @@ button {
   gap: 8px;
   padding: 32px;
   text-align: center;
-  color: var(--ctm-muted);
+  color: var(--ftm-muted);
   max-width: 460px;
 }
 
-.ctm-loading {
+.ftm-loading {
   flex-direction: row;
 }
 
-.ctm-empty h2 {
+.ftm-empty h2 {
   margin: 4px 0 0;
   color: var(--vscode-foreground);
   font-size: 1.1em;
   font-weight: 600;
 }
 
-.ctm-empty p {
+.ftm-empty p {
   margin: 0;
 }
 
-.ctm-empty-icon {
+.ftm-empty-icon {
   font-size: 32px !important;
 }
 
-.ctm-empty-detail {
+.ftm-empty-detail {
   font-family: var(--vscode-editor-font-family);
   font-size: 0.85em;
   opacity: 0.8;
   word-break: break-word;
 }
 
-.ctm-empty-actions {
+.ftm-empty-actions {
   margin-top: 8px;
 }
 
 /* ---- high contrast ---------------------------------------------------------------------- */
-body.vscode-high-contrast .ctm-row-added,
-body.vscode-high-contrast-light .ctm-row-added {
-  outline: 1px dashed var(--ctm-added-fg);
+body.vscode-high-contrast .ftm-row-added,
+body.vscode-high-contrast-light .ftm-row-added {
+  outline: 1px dashed var(--ftm-added-fg);
   outline-offset: -1px;
 }
 
-body.vscode-high-contrast .ctm-row-ghost,
-body.vscode-high-contrast-light .ctm-row-ghost {
-  outline: 1px dashed var(--ctm-removed-fg);
+body.vscode-high-contrast .ftm-row-ghost,
+body.vscode-high-contrast-light .ftm-row-ghost {
+  outline: 1px dashed var(--ftm-removed-fg);
   outline-offset: -1px;
 }
 
@@ -448,30 +448,30 @@ body.vscode-high-contrast-light .ctm-row-ghost {
  * card peeks below by its footer height, and the second older card peeks a little further.
  * Cards keep the same DOM node when they change slot, so these transforms animate.
  */
-.ctm-deck {
-  --ctm-anim-duration: 200ms;
-  --ctm-anim-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --ctm-peek: 42px;
+.ftm-deck {
+  --ftm-anim-duration: 200ms;
+  --ftm-anim-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ftm-peek: 42px;
   padding: 0;
   overflow: hidden;
 }
 
-.ctm-deck .ctm-card {
+.ftm-deck .ftm-card {
   position: absolute;
-  top: calc(var(--ctm-peek) + 12px);
+  top: calc(var(--ftm-peek) + 12px);
   right: 28px;
-  bottom: calc(var(--ctm-peek) * 1.7 + 12px);
+  bottom: calc(var(--ftm-peek) * 1.7 + 12px);
   left: 28px;
   transform-origin: 50% 50%;
   transition:
-    transform var(--ctm-anim-duration) var(--ctm-anim-ease),
-    opacity var(--ctm-anim-duration) var(--ctm-anim-ease),
-    box-shadow var(--ctm-anim-duration) var(--ctm-anim-ease);
+    transform var(--ftm-anim-duration) var(--ftm-anim-ease),
+    opacity var(--ftm-anim-duration) var(--ftm-anim-ease),
+    box-shadow var(--ftm-anim-duration) var(--ftm-anim-ease);
   will-change: transform, opacity;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
 }
 
-.ctm-card[data-slot='0'] {
+.ftm-card[data-slot='0'] {
   transform: translateY(0) scale(1);
   opacity: 1;
   z-index: 10;
@@ -479,62 +479,62 @@ body.vscode-high-contrast-light .ctm-row-ghost {
 }
 
 /* scale(0.97) pulls each edge in by ~1.5% of the card height; the translate compensates so the
-   peeking strip equals --ctm-peek. */
-.ctm-card[data-slot='-1'] {
-  transform: translateY(calc(-1 * var(--ctm-peek) - 10px)) scale(0.97);
+   peeking strip equals --ftm-peek. */
+.ftm-card[data-slot='-1'] {
+  transform: translateY(calc(-1 * var(--ftm-peek) - 10px)) scale(0.97);
   opacity: 0.42;
   z-index: 9;
 }
 
-.ctm-card[data-slot='1'] {
-  transform: translateY(calc(var(--ctm-peek) + 10px)) scale(0.97);
+.ftm-card[data-slot='1'] {
+  transform: translateY(calc(var(--ftm-peek) + 10px)) scale(0.97);
   opacity: 0.42;
   z-index: 9;
 }
 
-.ctm-card[data-slot='2'] {
-  transform: translateY(calc(var(--ctm-peek) * 1.75 + 20px)) scale(0.94);
+.ftm-card[data-slot='2'] {
+  transform: translateY(calc(var(--ftm-peek) * 1.75 + 20px)) scale(0.94);
   opacity: 0.18;
   z-index: 8;
 }
 
-.ctm-card[data-slot='hidden-newer'] {
-  transform: translateY(calc(-1.6 * var(--ctm-peek))) scale(0.94);
+.ftm-card[data-slot='hidden-newer'] {
+  transform: translateY(calc(-1.6 * var(--ftm-peek))) scale(0.94);
   opacity: 0;
   z-index: 7;
   pointer-events: none;
 }
 
-.ctm-card[data-slot='hidden-older'] {
-  transform: translateY(calc(2.4 * var(--ctm-peek))) scale(0.91);
+.ftm-card[data-slot='hidden-older'] {
+  transform: translateY(calc(2.4 * var(--ftm-peek))) scale(0.91);
   opacity: 0;
   z-index: 7;
   pointer-events: none;
 }
 
-.ctm-card-background {
+.ftm-card-background {
   cursor: pointer;
 }
 
-.ctm-card-background:hover {
+.ftm-card-background:hover {
   opacity: 0.6;
 }
 
-.ctm-card-background .ctm-code {
+.ftm-card-background .ftm-code {
   overflow: hidden; /* background cards scroll programmatically only */
   pointer-events: none;
 }
 
 /* Footer mirrors the header so the older card is readable where it peeks (below). */
-.ctm-card-footer {
+.ftm-card-footer {
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
   justify-content: center;
   gap: 2px;
   padding: 4px 12px;
-  height: var(--ctm-peek);
-  border-top: 1px solid var(--ctm-border);
+  height: var(--ftm-peek);
+  border-top: 1px solid var(--ftm-border);
   color: var(--vscode-foreground);
   background: var(--vscode-sideBarSectionHeader-background, transparent);
   white-space: nowrap;
@@ -542,12 +542,12 @@ body.vscode-high-contrast-light .ctm-row-ghost {
 }
 
 /* The active card's footer is a status line; background cards repeat their identity there. */
-.ctm-card-active .ctm-card-footer {
-  color: var(--ctm-muted);
+.ftm-card-active .ftm-card-footer {
+  color: var(--ftm-muted);
   font-size: 0.9em;
 }
 
-.ctm-footer-status {
+.ftm-footer-status {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -557,109 +557,109 @@ body.vscode-high-contrast-light .ctm-row-ghost {
   text-overflow: ellipsis;
 }
 
-.ctm-footer-status > * {
+.ftm-footer-status > * {
   flex: 0 0 auto;
 }
 
-.ctm-change-nav {
+.ftm-change-nav {
   display: inline-flex;
   align-items: center;
   gap: 2px;
   margin-left: 2px;
   padding-left: 6px;
-  border-left: 1px solid var(--ctm-border);
+  border-left: 1px solid var(--ftm-border);
 }
 
-.ctm-change-button {
+.ftm-change-button {
   padding: 0 3px;
 }
 
-.ctm-change-count {
+.ftm-change-count {
   font-variant-numeric: tabular-nums;
   color: var(--vscode-foreground);
 }
 
-.ctm-footer-gap {
+.ftm-footer-gap {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   color: var(--vscode-foreground);
 }
 
-.ctm-footer-gap .codicon {
+.ftm-footer-gap .codicon {
   font-size: 12px !important;
-  color: var(--ctm-muted);
+  color: var(--ftm-muted);
 }
 
-.ctm-footer-line {
+.ftm-footer-line {
   display: flex;
   align-items: center;
   gap: 8px;
   min-width: 0;
 }
 
-.ctm-footer-meta {
-  color: var(--ctm-muted);
+.ftm-footer-meta {
+  color: var(--ftm-muted);
   font-size: 0.92em;
 }
 
-.ctm-footer-hash {
+.ftm-footer-hash {
   font-family: var(--vscode-editor-font-family);
   font-size: 0.95em;
   padding: 0 6px;
   border-radius: 4px;
-  border: 1px solid var(--ctm-border);
+  border: 1px solid var(--ftm-border);
   background: var(--vscode-badge-background);
   color: var(--vscode-badge-foreground);
 }
 
-.ctm-footer-subject {
+.ftm-footer-subject {
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 500;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ctm-deck .ctm-card {
+  .ftm-deck .ftm-card {
     transition: none;
   }
 }
 
-body.vscode-reduce-motion .ctm-deck .ctm-card {
+body.vscode-reduce-motion .ftm-deck .ftm-card {
   transition: none;
 }
 
 /* ---- scroll sync ------------------------------------------------------------------------ */
-.ctm-code-approximate::after {
+.ftm-code-approximate::after {
   content: '≈ approximate alignment';
   position: absolute;
   right: 12px;
   bottom: 6px;
   padding: 1px 6px;
   border-radius: 8px;
-  border: 1px solid var(--ctm-border);
+  border: 1px solid var(--ftm-border);
   background: var(--vscode-editorWidget-background);
-  color: var(--ctm-muted);
+  color: var(--ftm-muted);
   font-family: var(--vscode-font-family);
   font-size: 0.8em;
   pointer-events: none;
 }
 
-.ctm-card-active .ctm-code-approximate::after {
+.ftm-card-active .ftm-code-approximate::after {
   display: none;
 }
 
 /* ---- timeline ---------------------------------------------------------------------------- */
-.ctm-timeline {
+.ftm-timeline {
   flex: 0 0 240px;
   min-width: 0;
-  border-left: 1px solid var(--ctm-border);
+  border-left: 1px solid var(--ftm-border);
   background: var(--vscode-sideBar-background, var(--vscode-editor-background));
   display: flex;
   flex-direction: column;
 }
 
-.ctm-timeline-list {
+.ftm-timeline-list {
   list-style: none;
   margin: 0;
   /* No padding-top: sticky headers anchor to the scroller's content edge, so any padding would
@@ -670,22 +670,22 @@ body.vscode-reduce-motion .ctm-deck .ctm-card {
   outline: none;
 }
 
-.ctm-timeline-list::before {
+.ftm-timeline-list::before {
   content: '';
   display: block;
   height: 6px;
 }
 
-.ctm-timeline-list:focus-visible {
+.ftm-timeline-list:focus-visible {
   box-shadow: inset 0 0 0 1px var(--vscode-focusBorder);
 }
 
-.ctm-timeline-group {
+.ftm-timeline-group {
   margin: 0;
   padding: 0;
 }
 
-.ctm-timeline-day {
+.ftm-timeline-day {
   position: sticky;
   top: 0;
   z-index: 3; /* above the rail and the positioned dots */
@@ -693,11 +693,11 @@ body.vscode-reduce-motion .ctm-deck .ctm-card {
   font-size: 0.8em;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--ctm-muted);
+  color: var(--ftm-muted);
   background: var(--vscode-sideBar-background, var(--vscode-editor-background));
 }
 
-.ctm-timeline-items {
+.ftm-timeline-items {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -705,17 +705,17 @@ body.vscode-reduce-motion .ctm-deck .ctm-card {
 }
 
 /* the rail */
-.ctm-timeline-items::before {
+.ftm-timeline-items::before {
   content: '';
   position: absolute;
   left: 21px;
   top: 0;
   bottom: 0;
   width: 1px;
-  background: var(--ctm-border);
+  background: var(--ftm-border);
 }
 
-.ctm-timeline-item {
+.ftm-timeline-item {
   position: relative;
   display: flex;
   align-items: flex-start;
@@ -725,22 +725,22 @@ body.vscode-reduce-motion .ctm-deck .ctm-card {
   border-left: 2px solid transparent;
 }
 
-.ctm-timeline-item:hover {
+.ftm-timeline-item:hover {
   background: var(--vscode-list-hoverBackground);
 }
 
-.ctm-timeline-item-active {
+.ftm-timeline-item-active {
   background: var(--vscode-list-activeSelectionBackground);
   color: var(--vscode-list-activeSelectionForeground, var(--vscode-foreground));
   border-left-color: var(--vscode-focusBorder);
 }
 
-.ctm-timeline-item-active .ctm-timeline-meta {
+.ftm-timeline-item-active .ftm-timeline-meta {
   color: inherit;
   opacity: 0.8;
 }
 
-.ctm-timeline-dot {
+.ftm-timeline-dot {
   position: relative;
   flex: 0 0 auto;
   width: 18px;
@@ -752,160 +752,160 @@ body.vscode-reduce-motion .ctm-deck .ctm-card {
   z-index: 1;
 }
 
-.ctm-timeline-dot::before {
+.ftm-timeline-dot::before {
   content: '';
   border-radius: 50%;
-  background: var(--ctm-muted);
+  background: var(--ftm-muted);
   width: 6px;
   height: 6px;
 }
 
-.ctm-dot-none::before {
+.ftm-dot-none::before {
   width: 5px;
   height: 5px;
   background: transparent;
-  border: 1px solid var(--ctm-muted);
+  border: 1px solid var(--ftm-muted);
 }
 
-.ctm-dot-medium::before {
+.ftm-dot-medium::before {
   width: 9px;
   height: 9px;
   background: var(--vscode-foreground);
 }
 
-.ctm-dot-large::before {
+.ftm-dot-large::before {
   width: 12px;
   height: 12px;
   background: var(--vscode-foreground);
 }
 
-.ctm-timeline-item-active .ctm-timeline-dot::before {
+.ftm-timeline-item-active .ftm-timeline-dot::before {
   background: var(--vscode-focusBorder);
   border-color: var(--vscode-focusBorder);
 }
 
-.ctm-timeline-dot .codicon {
+.ftm-timeline-dot .codicon {
   position: absolute;
   font-size: 12px !important;
   background: var(--vscode-sideBar-background, var(--vscode-editor-background));
   border-radius: 50%;
 }
 
-.ctm-timeline-item-active .ctm-timeline-dot .codicon {
+.ftm-timeline-item-active .ftm-timeline-dot .codicon {
   background: transparent;
 }
 
-.ctm-timeline-text {
+.ftm-timeline-text {
   display: flex;
   flex-direction: column;
   min-width: 0;
   gap: 1px;
 }
 
-.ctm-timeline-subject {
+.ftm-timeline-subject {
   font-size: 0.92em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.ctm-timeline-meta {
+.ftm-timeline-meta {
   font-size: 0.8em;
-  color: var(--ctm-muted);
+  color: var(--ftm-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   font-family: var(--vscode-editor-font-family);
 }
 
-.ctm-timeline-more {
+.ftm-timeline-more {
   display: flex;
   justify-content: center;
   padding: 10px;
 }
 
 /* ---- header actions & toolbar extras --------------------------------------------------- */
-.ctm-actions {
+.ftm-actions {
   display: inline-flex;
   gap: 2px;
   margin-left: 4px;
 }
 
-.ctm-actions .ctm-icon-button {
+.ftm-actions .ftm-icon-button {
   padding: 2px 4px;
 }
 
-.ctm-toolbar-separator {
+.ftm-toolbar-separator {
   width: 1px;
   height: 16px;
   margin: 0 6px;
-  background: var(--ctm-border);
+  background: var(--ftm-border);
 }
 
-.ctm-icon-button-on {
+.ftm-icon-button-on {
   background: var(--vscode-toolbar-activeBackground, var(--vscode-toolbar-hoverBackground));
-  border-color: var(--ctm-border);
+  border-color: var(--ftm-border);
 }
 
 /* ---- responsive --------------------------------------------------------------------------- */
-.ctm-card {
+.ftm-card {
   container-type: inline-size;
 }
 
 /* Narrow cards: drop the least informative header parts first. */
 @container (max-width: 680px) {
-  .ctm-path-group {
+  .ftm-path-group {
     display: none;
   }
 }
 
 @container (max-width: 540px) {
-  .ctm-badges {
+  .ftm-badges {
     display: none;
   }
-  .ctm-author {
+  .ftm-author {
     max-width: 60%;
   }
 }
 
 @container (max-width: 440px) {
   /* The subject matters more than the numbers (which the footer repeats). */
-  .ctm-card-line1 .ctm-stats,
-  .ctm-actions .ctm-icon-button[aria-label='Copy commit message'] {
+  .ftm-card-line1 .ftm-stats,
+  .ftm-actions .ftm-icon-button[aria-label='Copy commit message'] {
     display: none;
   }
-  .ctm-subject {
+  .ftm-subject {
     min-width: 6ch;
   }
 }
 
-.ctm-timeline-day-short {
+.ftm-timeline-day-short {
   display: none;
 }
 
 /* Medium panels: keep the subject, drop hash/author. */
 @media (max-width: 1000px) {
-  .ctm-timeline {
+  .ftm-timeline {
     flex-basis: 200px;
   }
-  .ctm-timeline-meta {
+  .ftm-timeline-meta {
     display: none;
   }
 }
 
 /* Narrow panels: compact rail with short sticky day labels; give the deck more room. */
 @media (max-width: 760px) {
-  .ctm-timeline {
+  .ftm-timeline {
     flex-basis: 68px;
   }
-  .ctm-timeline-text,
-  .ctm-timeline-day-full {
+  .ftm-timeline-text,
+  .ftm-timeline-day-full {
     display: none;
   }
-  .ctm-timeline-day-short {
+  .ftm-timeline-day-short {
     display: block;
   }
-  .ctm-timeline-day {
+  .ftm-timeline-day {
     padding: 4px 2px 2px;
     font-size: 0.68em;
     letter-spacing: 0;
@@ -915,36 +915,36 @@ body.vscode-reduce-motion .ctm-deck .ctm-card {
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .ctm-timeline-items::before {
+  .ftm-timeline-items::before {
     left: calc(50% - 0.5px);
   }
-  .ctm-timeline-item {
+  .ftm-timeline-item {
     justify-content: center;
     padding: 5px 0;
   }
-  .ctm-toolbar-repo {
+  .ftm-toolbar-repo {
     display: none;
   }
-  .ctm-deck .ctm-card {
+  .ftm-deck .ftm-card {
     left: 12px;
     right: 12px;
   }
-  .ctm-toolbar {
+  .ftm-toolbar {
     padding: 6px 8px;
   }
 }
 
 @media (max-width: 520px) {
-  .ctm-toolbar-position {
+  .ftm-toolbar-position {
     min-width: 4em;
   }
-  .ctm-toolbar-separator {
+  .ftm-toolbar-separator {
     display: none;
   }
 }
 
 /* ---- minimap ------------------------------------------------------------------------------ */
-.ctm-code-wrap {
+.ftm-code-wrap {
   position: relative;
   display: flex;
   flex: 1 1 auto;
@@ -952,24 +952,24 @@ body.vscode-reduce-motion .ctm-deck .ctm-card {
   min-width: 0;
 }
 
-.ctm-code-wrap > .ctm-code {
+.ftm-code-wrap > .ftm-code {
   flex: 1 1 auto;
   min-width: 0;
 }
 
-.ctm-minimap {
+.ftm-minimap {
   flex: 0 0 72px;
   width: 72px;
   height: 100%;
   display: block;
-  border-left: 1px solid var(--ctm-border);
+  border-left: 1px solid var(--ftm-border);
   background: var(--vscode-editor-background);
   cursor: pointer;
   user-select: none;
 }
 
 @container (max-width: 560px) {
-  .ctm-minimap {
+  .ftm-minimap {
     display: none;
   }
 }

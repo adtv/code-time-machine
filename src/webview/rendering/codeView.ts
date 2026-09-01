@@ -29,11 +29,11 @@ export class CodeView {
     private readonly options: CodeViewOptions,
   ) {
     this.root = container;
-    this.root.classList.add('ctm-code');
+    this.root.classList.add('ftm-code');
     this.spacer = document.createElement('div');
-    this.spacer.className = 'ctm-code-spacer';
+    this.spacer.className = 'ftm-code-spacer';
     this.layer = document.createElement('div');
-    this.layer.className = 'ctm-code-layer';
+    this.layer.className = 'ftm-code-layer';
     this.spacer.appendChild(this.layer);
     this.root.appendChild(this.spacer);
     this.root.addEventListener('scroll', this.onScroll, { passive: true });
@@ -42,7 +42,7 @@ export class CodeView {
   setModel(model: RowModel): void {
     this.model = model;
     this.gutterWidth = Math.max(3, String(model.lineCount).length);
-    this.root.style.setProperty('--ctm-gutter-chars', String(this.gutterWidth));
+    this.root.style.setProperty('--ftm-gutter-chars', String(this.gutterWidth));
     this.spacer.style.height = `${model.rows.length * this.options.rowHeight}px`;
     this.clear();
     this.render();
@@ -170,7 +170,7 @@ export class CodeView {
   /** Marks the card as approximately synchronised (low mapping confidence). */
   setSyncConfidence(confidence: number, exact: boolean): void {
     const approximate = !exact || confidence < 0.3;
-    this.root.classList.toggle('ctm-code-approximate', approximate);
+    this.root.classList.toggle('ftm-code-approximate', approximate);
     this.root.dataset['syncConfidence'] = confidence.toFixed(2);
   }
 
@@ -246,7 +246,7 @@ const FONT_UNDERLINE = 4;
 
 export function renderRow(row: Row, index: number, rowHeight: number): HTMLElement {
   const el = document.createElement('div');
-  el.className = `ctm-row ctm-row-${row.kind}`;
+  el.className = `ftm-row ftm-row-${row.kind}`;
   el.style.transform = `translateY(${index * rowHeight}px)`;
   el.setAttribute('role', 'row');
   const label = KIND_LABEL[row.kind];
@@ -255,18 +255,18 @@ export function renderRow(row: Row, index: number, rowHeight: number): HTMLEleme
   }
 
   const gutter = document.createElement('span');
-  gutter.className = 'ctm-gutter';
+  gutter.className = 'ftm-gutter';
   gutter.textContent = row.kind === 'ghost' ? '' : String(row.line + 1);
   el.appendChild(gutter);
 
   const marker = document.createElement('span');
-  marker.className = 'ctm-marker';
+  marker.className = 'ftm-marker';
   marker.textContent = row.kind === 'added' ? '+' : row.kind === 'ghost' ? '−' : '';
   marker.setAttribute('aria-hidden', 'true');
   el.appendChild(marker);
 
   const text = document.createElement('span');
-  text.className = 'ctm-text';
+  text.className = 'ftm-text';
   if (row.spans && row.palette) {
     for (const [content, colorIndex, style] of row.spans) {
       const span = document.createElement('span');

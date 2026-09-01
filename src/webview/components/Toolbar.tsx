@@ -20,16 +20,16 @@ export function Toolbar() {
   const canNewer = index > 0;
   const canOlder = index < total - 1 || hasMore.value;
   return (
-    <header class="ctm-toolbar">
-      <div class="ctm-toolbar-file" title={info?.relPath ?? ''}>
+    <header class="ftm-toolbar">
+      <div class="ftm-toolbar-file" title={info?.relPath ?? ''}>
         <span class="codicon codicon-versions" aria-hidden="true" />
-        <span class="ctm-toolbar-name">{info?.fileName ?? ''}</span>
-        {info?.repoName ? <span class="ctm-toolbar-repo">{info.repoName}</span> : null}
+        <span class="ftm-toolbar-name">{info?.fileName ?? ''}</span>
+        {info?.repoName ? <span class="ftm-toolbar-repo">{info.repoName}</span> : null}
       </div>
-      <div class="ctm-toolbar-nav" role="group" aria-label="Time travel">
+      <div class="ftm-toolbar-nav" role="group" aria-label="Time travel">
         <button
           type="button"
-          class="ctm-icon-button"
+          class="ftm-icon-button"
           title="Newer revision (K, Alt+↑)"
           aria-label="Newer revision"
           disabled={!canNewer}
@@ -37,12 +37,12 @@ export function Toolbar() {
         >
           <span class="codicon codicon-arrow-up" aria-hidden="true" />
         </button>
-        <span class="ctm-toolbar-position" aria-live="polite">
+        <span class="ftm-toolbar-position" aria-live="polite">
           {total === 0 ? '—' : `${index + 1} / ${total}${hasMore.value ? '+' : ''}`}
         </span>
         <button
           type="button"
-          class="ctm-icon-button"
+          class="ftm-icon-button"
           title="Older revision (J, Alt+↓)"
           aria-label="Older revision"
           disabled={!canOlder}
@@ -50,10 +50,10 @@ export function Toolbar() {
         >
           <span class="codicon codicon-arrow-down" aria-hidden="true" />
         </button>
-        <span class="ctm-toolbar-separator" aria-hidden="true" />
+        <span class="ftm-toolbar-separator" aria-hidden="true" />
         <button
           type="button"
-          class={`ctm-icon-button ${showGhostLines.value ? 'ctm-icon-button-on' : ''}`}
+          class={`ftm-icon-button ${showGhostLines.value ? 'ftm-icon-button-on' : ''}`}
           title={
             showGhostLines.value
               ? 'Hide removed lines (ghost lines)'
@@ -67,7 +67,7 @@ export function Toolbar() {
         </button>
         <button
           type="button"
-          class={`ctm-icon-button ${showMinimap.value ? 'ctm-icon-button-on' : ''}`}
+          class={`ftm-icon-button ${showMinimap.value ? 'ftm-icon-button-on' : ''}`}
           title={showMinimap.value ? 'Hide minimap' : 'Show minimap'}
           aria-label="Toggle minimap"
           aria-pressed={showMinimap.value}
@@ -77,7 +77,7 @@ export function Toolbar() {
         </button>
         <button
           type="button"
-          class={`ctm-icon-button ${timelineVisible.value ? 'ctm-icon-button-on' : ''}`}
+          class={`ftm-icon-button ${timelineVisible.value ? 'ftm-icon-button-on' : ''}`}
           title={timelineVisible.value ? 'Hide timeline' : 'Show timeline'}
           aria-label="Toggle timeline"
           aria-pressed={timelineVisible.value}
@@ -87,7 +87,7 @@ export function Toolbar() {
         </button>
         <button
           type="button"
-          class="ctm-icon-button"
+          class="ftm-icon-button"
           title="Refresh (R)"
           aria-label="Refresh history"
           onClick={() => postToExtension({ type: 'refresh' })}

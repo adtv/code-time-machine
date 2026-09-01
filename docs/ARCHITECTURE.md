@@ -1,6 +1,6 @@
 # Architecture
 
-Code Time Machine is a VS Code extension that lets a developer travel through a file's Git
+File Time Machine is a VS Code extension that lets a developer travel through a file's Git
 history: revisions are shown as depth-layered cards, lines are kept synchronized between
 revisions by a line-mapping engine, and navigation through time is continuous.
 
@@ -109,7 +109,7 @@ webview: store (signals) → RevisionDeck (cards by slot) → CodeView (virtuali
 
 - **Deck geometry.** Newer revisions stack _above_ the active card, older ones _below_; wheel
   down / `J` / PageDown = older, matching a newest-first timeline. The newer card peeks by exactly
-  its header height and the older card by its footer height (`--ctm-peek`), so what peeks is
+  its header height and the older card by its footer height (`--ftm-peek`), so what peeks is
   always readable (hash, subject, author, date, stats). One hidden card on each side lets cards
   fade in/out instead of popping. Cards are keyed by revision id: the same DOM node moves between
   slots, so a CSS transition (200 ms, `cubic-bezier(0.2, 0.8, 0.2, 1)`) animates the travel and

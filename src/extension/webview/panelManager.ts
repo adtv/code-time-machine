@@ -58,15 +58,15 @@ export class PanelManager implements vscode.Disposable {
         }
       }),
       vscode.workspace.onDidChangeConfiguration((event) => {
-        if (!event.affectsConfiguration('visualGitHistory')) {
+        if (!event.affectsConfiguration('fileTimeMachine')) {
           return;
         }
         const settings = this.settings();
         const structural =
-          event.affectsConfiguration('visualGitHistory.followRenames') ||
-          event.affectsConfiguration('visualGitHistory.ignoreWhitespace') ||
-          event.affectsConfiguration('visualGitHistory.maxCommits') ||
-          event.affectsConfiguration('visualGitHistory.maxFileSizeKB');
+          event.affectsConfiguration('fileTimeMachine.followRenames') ||
+          event.affectsConfiguration('fileTimeMachine.ignoreWhitespace') ||
+          event.affectsConfiguration('fileTimeMachine.maxCommits') ||
+          event.affectsConfiguration('fileTimeMachine.maxFileSizeKB');
         for (const entry of this.entries.values()) {
           entry.panel.post({ type: 'config', payload: toWebviewConfig(settings) });
           if (structural) {
@@ -78,7 +78,7 @@ export class PanelManager implements vscode.Disposable {
   }
 
   settings(): Settings {
-    const config = vscode.workspace.getConfiguration('visualGitHistory');
+    const config = vscode.workspace.getConfiguration('fileTimeMachine');
     return readSettings({ get: <T>(key: string) => config.get<T>(key) });
   }
 
@@ -335,7 +335,7 @@ export class PanelManager implements vscode.Disposable {
       this.deps.logger.error(`handling ${message.type} failed`, error);
       const text = GitError.is(error)
         ? error.userMessage
-        : 'Visual Git History: an unexpected error occurred.';
+        : 'File Time Machine: an unexpected error occurred.';
       void vscode.window.showErrorMessage(text);
     }
   }
@@ -343,7 +343,7 @@ export class PanelManager implements vscode.Disposable {
   private updateContext(): void {
     void vscode.commands.executeCommand(
       'setContext',
-      'codeTimeMachine.hasSession',
+      'fileTimeMachine.hasSession',
       this.entries.size > 0,
     );
   }

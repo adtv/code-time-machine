@@ -28,14 +28,14 @@ describe('CodeView', () => {
   it('renders only the visible rows plus overscan and positions them by translateY', () => {
     const { el, view } = mount();
     view.setModel(model(100));
-    const rows = el.querySelectorAll('.ctm-row');
+    const rows = el.querySelectorAll('.ftm-row');
     // 200px / 20px = 10 visible + 2*2 overscan (+1 inclusive) ≈ 15 rows
     expect(rows.length).toBeGreaterThanOrEqual(10);
     expect(rows.length).toBeLessThanOrEqual(16);
     const first = rows[0] as HTMLElement;
     expect(first.style.transform).toBe('translateY(0px)');
-    expect(first.querySelector('.ctm-gutter')?.textContent).toBe('1');
-    expect(first.querySelector('.ctm-text')?.textContent).toBe('line 0');
+    expect(first.querySelector('.ftm-gutter')?.textContent).toBe('1');
+    expect(first.querySelector('.ftm-text')?.textContent).toBe('line 0');
     view.dispose();
   });
 
@@ -71,9 +71,9 @@ describe('CodeView', () => {
   it('flags approximate synchronisation', () => {
     const { el, view } = mount();
     view.setSyncConfidence(0.1, false);
-    expect(el.classList.contains('ctm-code-approximate')).toBe(true);
+    expect(el.classList.contains('ftm-code-approximate')).toBe(true);
     view.setSyncConfidence(1, true);
-    expect(el.classList.contains('ctm-code-approximate')).toBe(false);
+    expect(el.classList.contains('ftm-code-approximate')).toBe(false);
     view.dispose();
   });
 });

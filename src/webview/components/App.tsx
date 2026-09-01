@@ -9,13 +9,13 @@ export function App() {
   const loading = busy.value;
   const ready = init.value !== undefined;
   return (
-    <div class="ctm-app">
+    <div class="ftm-app">
       <Toolbar />
-      <main class="ctm-main">
+      <main class="ftm-main">
         {state ? (
           <EmptyStateView state={state} />
         ) : !ready || (loading.busy && revisions.value.length === 0) ? (
-          <div class="ctm-loading" role="status" aria-live="polite">
+          <div class="ftm-loading" role="status" aria-live="polite">
             <span class="codicon codicon-loading codicon-modifier-spin" aria-hidden="true" />
             <span>{loading.message ?? 'Loading history…'}</span>
           </div>

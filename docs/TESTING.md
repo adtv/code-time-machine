@@ -1,6 +1,6 @@
 # Testing
 
-Code Time Machine is verified at four levels plus a documented manual matrix. All automated
+File Time Machine is verified at four levels plus a documented manual matrix. All automated
 suites must be green before a release (`npm run check && npm run test:extension`).
 
 ## Automated suites
@@ -13,7 +13,7 @@ suites must be green before a release (`npm run check && npm run test:extension`
 | `npm run test:extension`   | `@vscode/test-cli` (Mocha inside VS Code) | activation, command registration, multi-root repository detection, rename following, prev/next commands, untracked-file empty state, panel reuse, syntax highlighting through the worker                                                                                                                                                                                            |
 | `npm test`                 | all Vitest projects                       | —                                                                                                                                                                                                                                                                                                                                                                                   |
 
-Temporary repositories are created under `os.tmpdir()` (override with `CTM_TEST_TMP`) and
+Temporary repositories are created under `os.tmpdir()` (override with `FTM_TEST_TMP`) and
 removed afterwards. Extension tests generate their fixtures with
 `scripts/prepare-extension-fixtures.mjs` into `.vscode-test/fixtures` (two small repositories, the
 demo repository and a multi-root `.code-workspace`).
@@ -27,24 +27,24 @@ present on Ubuntu 24.04 desktop images.
 
 ### Visual harness
 
-`CTM_VISUAL=1 npm run test:extension` additionally opens the demo file's history in the real
+`FTM_VISUAL=1 npm run test:extension` additionally opens the demo file's history in the real
 window, inspects the live webview DOM through the Chromium DevTools Protocol (VS Code is launched
 with `--remote-debugging-port`), **asserts scroll synchronisation numerically** (every card must
 be centred on the same logical line) and stores screenshots in `.vscode-test/shots`
-(`CTM_SHOT_DIR` to change). `CTM_THEME="Light Modern"` (a theme _settings id_, e.g. `Dark Modern`,
+(`FTM_SHOT_DIR` to change). `FTM_THEME="Light Modern"` (a theme _settings id_, e.g. `Dark Modern`,
 `Light Modern`) selects the theme through seeded user settings; the run logs the effective theme
 kind so a wrong id is visible.
 
 ## Smoke test (reproducible)
 
-1. `npm run build && npm run package` → `code-time-machine-<version>.vsix`.
-2. `code --install-extension code-time-machine-<version>.vsix` (from WSL this installs into the
+1. `npm run build && npm run package` → `file-time-machine-<version>.vsix`.
+2. `code --install-extension file-time-machine-<version>.vsix` (from WSL this installs into the
    WSL remote; on Windows into the local VS Code). Reload the window.
 3. `npm run demo-repo -- /path/to/demo --force` creates a repository with 20 commits on
    `src/services/UserService.ts` (rename, merge, uncommitted change) plus PHP/Python/JSON/text
    samples.
 4. Open the demo folder, open `src/services/UserService.ts`, run
-   **Visual Git History: Open File History** (Ctrl+Alt+H, editor title icon or context menu).
+   **File Time Machine: Open File History** (Ctrl+Alt+H, editor title icon or context menu).
 5. Check: the Working Tree card is in front (uncommitted change), the older cards peek below
    with their footer (hash · subject · author · date); when an older revision is active, the
    newer one peeks above with its header.

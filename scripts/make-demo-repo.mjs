@@ -1,5 +1,5 @@
 // Creates a realistic demo repository for manual testing and screenshots.
-// Usage: node scripts/make-demo-repo.mjs [target-dir]   (default: ../code-time-machine-demo)
+// Usage: node scripts/make-demo-repo.mjs [target-dir]   (default: ../file-time-machine-demo)
 // Exports createDemoRepo(dir) for reuse by the extension-test fixtures.
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
@@ -516,7 +516,7 @@ class InvoiceController
 const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isMain) {
   const target = path.resolve(
-    process.argv[2] ?? path.join(process.cwd(), '..', 'code-time-machine-demo'),
+    process.argv[2] ?? path.join(process.cwd(), '..', 'file-time-machine-demo'),
   );
   if (existsSync(target) && !process.argv.includes('--force')) {
     console.error(`${target} already exists; pass --force to recreate it`);
@@ -525,6 +525,6 @@ if (isMain) {
   createDemoRepo(target);
   console.log(`demo repository created at ${target}`);
   console.log(
-    'Open it in VS Code, open src/services/UserService.ts and run "Visual Git History: Open File History".',
+    'Open it in VS Code, open src/services/UserService.ts and run "File Time Machine: Open File History".',
   );
 }

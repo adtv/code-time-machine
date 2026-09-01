@@ -37,13 +37,13 @@ export class GitError extends Error {
 const USER_MESSAGES: Record<GitErrorCode, string> = {
   GitNotFound: 'Git was not found. Install Git or set "git.path" in your settings.',
   GitDisabled:
-    'The built-in Git extension is disabled. Enable "git.enabled" to use Visual Git History.',
+    'The built-in Git extension is disabled. Enable "git.enabled" to use File Time Machine.',
   NotRepository: 'This file is not inside a Git repository.',
   FileNotTracked: 'This file is not tracked by Git.',
   RevisionNotFound: 'The requested revision could not be found.',
   BinaryFile: 'Visual history for binary files is not supported yet.',
   FileTooLarge: 'This file is too large for animated history.',
-  GitCommandFailed: 'A Git command failed. See the "Visual Git History" output for details.',
+  GitCommandFailed: 'A Git command failed. See the "File Time Machine" output for details.',
   HistoryUnavailable: 'No history is available for this file.',
   Cancelled: 'The operation was cancelled.',
 };

@@ -70,8 +70,8 @@ describe('<Timeline />', () => {
     const options = getAllByRole('option');
     expect(options).toHaveLength(3);
     expect(options[0]?.getAttribute('aria-selected')).toBe('true');
-    expect(getByRole('listbox').getAttribute('aria-activedescendant')).toBe('ctm-tl-0');
-    expect(options[2]?.querySelector('.ctm-dot-large')).not.toBeNull();
+    expect(getByRole('listbox').getAttribute('aria-activedescendant')).toBe('ftm-tl-0');
+    expect(options[2]?.querySelector('.ftm-dot-large')).not.toBeNull();
     expect(options[0]?.getAttribute('title')).toContain('subject a');
   });
 

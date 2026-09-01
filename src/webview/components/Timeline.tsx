@@ -139,23 +139,23 @@ export function Timeline() {
   };
 
   return (
-    <aside class="ctm-timeline" aria-label="Timeline">
+    <aside class="ftm-timeline" aria-label="Timeline">
       <ul
         ref={listRef}
-        class="ctm-timeline-list"
+        class="ftm-timeline-list"
         role="listbox"
         aria-label="Revisions, newest first"
-        aria-activedescendant={`ctm-tl-${active}`}
+        aria-activedescendant={`ftm-tl-${active}`}
         tabIndex={0}
         onKeyDown={onKeyDown}
       >
         {groups.map((group) => (
-          <li key={`${group.label}-${group.items[0]?.index ?? 0}`} class="ctm-timeline-group">
-            <div class="ctm-timeline-day" aria-hidden="true" title={group.label}>
-              <span class="ctm-timeline-day-full">{group.label}</span>
-              <span class="ctm-timeline-day-short">{group.shortLabel}</span>
+          <li key={`${group.label}-${group.items[0]?.index ?? 0}`} class="ftm-timeline-group">
+            <div class="ftm-timeline-day" aria-hidden="true" title={group.label}>
+              <span class="ftm-timeline-day-full">{group.label}</span>
+              <span class="ftm-timeline-day-short">{group.shortLabel}</span>
             </div>
-            <ul class="ctm-timeline-items" role="presentation">
+            <ul class="ftm-timeline-items" role="presentation">
               {group.items.map(({ revision, index }) => (
                 <TimelineItem
                   key={revision.id}
@@ -168,10 +168,10 @@ export function Timeline() {
           </li>
         ))}
         {hasMore.value ? (
-          <li class="ctm-timeline-more" role="presentation">
+          <li class="ftm-timeline-more" role="presentation">
             <button
               type="button"
-              class="ctm-button"
+              class="ftm-button"
               disabled={loadingMore.value}
               onClick={() => requestLoadMore()}
             >
@@ -204,24 +204,24 @@ function TimelineItem({
   const isWorkingTree = revision.kind === 'workingTree';
   return (
     <li
-      id={`ctm-tl-${index}`}
-      class={`ctm-timeline-item ${active ? 'ctm-timeline-item-active' : ''}`}
+      id={`ftm-tl-${index}`}
+      class={`ftm-timeline-item ${active ? 'ftm-timeline-item-active' : ''}`}
       role="option"
       aria-selected={active}
       data-index={index}
       title={tooltipFor(revision)}
       onClick={() => setActive(index)}
     >
-      <span class={`ctm-timeline-dot ctm-dot-${magnitude}`} aria-hidden="true">
+      <span class={`ftm-timeline-dot ftm-dot-${magnitude}`} aria-hidden="true">
         {isWorkingTree ? (
           <span class="codicon codicon-edit" />
         ) : revision.isMerge ? (
           <span class="codicon codicon-git-merge" />
         ) : null}
       </span>
-      <span class="ctm-timeline-text">
-        <span class="ctm-timeline-subject">{revision.subject}</span>
-        <span class="ctm-timeline-meta">
+      <span class="ftm-timeline-text">
+        <span class="ftm-timeline-subject">{revision.subject}</span>
+        <span class="ftm-timeline-meta">
           {isWorkingTree ? 'uncommitted' : revision.id.slice(0, 7)} · {revision.author.name}
         </span>
       </span>

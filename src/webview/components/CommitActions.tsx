@@ -6,11 +6,11 @@ export function CommitActions({ revision, index }: { revision: RevisionMeta; ind
   const isWorkingTree = revision.kind === 'workingTree';
   const deleted = revision.changeKind === 'D';
   return (
-    <span class="ctm-actions" role="group" aria-label="Revision actions">
+    <span class="ftm-actions" role="group" aria-label="Revision actions">
       {!isWorkingTree ? (
         <button
           type="button"
-          class="ctm-icon-button"
+          class="ftm-icon-button"
           title="Copy commit message"
           aria-label="Copy commit message"
           onClick={(event) => {
@@ -29,7 +29,7 @@ export function CommitActions({ revision, index }: { revision: RevisionMeta; ind
       ) : null}
       <button
         type="button"
-        class="ctm-icon-button"
+        class="ftm-icon-button"
         title={isWorkingTree ? 'Open file' : 'Open this revision in an editor (read-only)'}
         aria-label="Open this revision in an editor"
         disabled={deleted}
@@ -43,7 +43,7 @@ export function CommitActions({ revision, index }: { revision: RevisionMeta; ind
       {!isWorkingTree ? (
         <button
           type="button"
-          class="ctm-icon-button"
+          class="ftm-icon-button"
           title="Compare with working tree"
           aria-label="Compare with working tree"
           disabled={deleted}

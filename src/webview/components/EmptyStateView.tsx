@@ -23,15 +23,15 @@ const TITLES: Record<EmptyState['kind'], string> = {
 
 export function EmptyStateView({ state }: { state: EmptyState }) {
   return (
-    <section class="ctm-empty" role="status" aria-live="polite">
-      <span class={`codicon ${ICONS[state.kind]} ctm-empty-icon`} aria-hidden="true" />
+    <section class="ftm-empty" role="status" aria-live="polite">
+      <span class={`codicon ${ICONS[state.kind]} ftm-empty-icon`} aria-hidden="true" />
       <h2>{TITLES[state.kind]}</h2>
       <p>{state.message}</p>
-      {state.detail ? <p class="ctm-empty-detail">{state.detail}</p> : null}
-      <div class="ctm-empty-actions">
+      {state.detail ? <p class="ftm-empty-detail">{state.detail}</p> : null}
+      <div class="ftm-empty-actions">
         <button
           type="button"
-          class="ctm-button"
+          class="ftm-button"
           onClick={() => postToExtension({ type: 'refresh' })}
         >
           <span class="codicon codicon-refresh" aria-hidden="true" /> Retry

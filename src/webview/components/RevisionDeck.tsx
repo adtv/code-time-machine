@@ -63,10 +63,10 @@ export function RevisionDeck() {
   const duration = activeView.value?.simplified ? 0 : config.value.animationDuration;
   return (
     <div
-      class="ctm-deck"
+      class="ftm-deck"
       ref={deckRef}
       data-simplified={activeView.value?.simplified ? 'true' : undefined}
-      style={{ '--ctm-anim-duration': `${duration}ms` }}
+      style={{ '--ftm-anim-duration': `${duration}ms` }}
       role="region"
       aria-label="Revision deck"
     >

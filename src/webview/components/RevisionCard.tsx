@@ -39,7 +39,7 @@ export function RevisionCard({
   const shortHash = revision.kind === 'workingTree' ? 'Working Tree' : revision.id.slice(0, 8);
   return (
     <article
-      class={`ctm-card ${isActive ? 'ctm-card-active' : 'ctm-card-background'}`}
+      class={`ftm-card ${isActive ? 'ftm-card-active' : 'ftm-card-background'}`}
       data-offset={offset}
       data-slot={slot}
       aria-hidden={!isActive}
@@ -52,16 +52,16 @@ export function RevisionCard({
         actions={isActive ? <CommitActions revision={revision} index={index} /> : undefined}
       />
       <CardBody view={view} error={error} active={isActive} />
-      <footer class="ctm-card-footer" aria-hidden={!isActive}>
+      <footer class="ftm-card-footer" aria-hidden={!isActive}>
         {isActive ? (
           <ActiveStatus view={view} revision={revision} previous={revisions.value[index + 1]} />
         ) : (
           <>
-            <div class="ctm-footer-line">
-              <span class="ctm-footer-hash">{shortHash}</span>
-              <span class="ctm-footer-subject">{revision.subject}</span>
+            <div class="ftm-footer-line">
+              <span class="ftm-footer-hash">{shortHash}</span>
+              <span class="ftm-footer-subject">{revision.subject}</span>
             </div>
-            <div class="ctm-footer-line ctm-footer-meta">
+            <div class="ftm-footer-line ftm-footer-meta">
               <span>{revision.author.name}</span>
               <span aria-hidden="true">·</span>
               <span>{formatDate(revision.authorDate)}</span>
@@ -84,14 +84,14 @@ function CardBody({
 }) {
   if (error) {
     return (
-      <div class="ctm-card-message" role="alert">
+      <div class="ftm-card-message" role="alert">
         <span class="codicon codicon-error" aria-hidden="true" /> {error}
       </div>
     );
   }
   if (!view) {
     return (
-      <div class="ctm-card-message" role="status">
+      <div class="ftm-card-message" role="status">
         <span class="codicon codicon-loading codicon-modifier-spin" aria-hidden="true" /> Loading
         revision…
       </div>
@@ -100,22 +100,22 @@ function CardBody({
   switch (view.content.kind) {
     case 'binary':
       return (
-        <div class="ctm-card-message">
+        <div class="ftm-card-message">
           <span class="codicon codicon-file-binary" aria-hidden="true" /> Visual history for binary
           files is not supported yet ({formatBytes(view.content.byteLength)}).
         </div>
       );
     case 'tooLarge':
       return (
-        <div class="ctm-card-message">
+        <div class="ftm-card-message">
           <span class="codicon codicon-warning" aria-hidden="true" /> This revision is too large to
           render ({formatBytes(view.content.byteLength)}, limit {formatBytes(view.content.limit)}).
-          Increase “visualGitHistory.maxFileSizeKB” to view it.
+          Increase “fileTimeMachine.maxFileSizeKB” to view it.
         </div>
       );
     case 'missing':
       return (
-        <div class="ctm-card-message">
+        <div class="ftm-card-message">
           <span class="codicon codicon-trash" aria-hidden="true" /> The file does not exist at this
           revision (it was deleted).
         </div>
@@ -201,15 +201,15 @@ function CodeViewHost({ view, active }: { view: RevisionView; active: boolean })
   }, [currentTheme]);
 
   return (
-    <div class="ctm-code-wrap">
+    <div class="ftm-code-wrap">
       <div
         ref={container}
-        class="ctm-code"
+        class="ftm-code"
         tabIndex={active ? 0 : -1}
         role="table"
         aria-label="Source code"
       />
-      {withMinimap ? <canvas ref={canvas} class="ctm-minimap" aria-hidden="true" /> : null}
+      {withMinimap ? <canvas ref={canvas} class="ftm-minimap" aria-hidden="true" /> : null}
     </div>
   );
 }
@@ -227,11 +227,11 @@ function ActiveStatus({
   const gap = gapSincePrevious(revision, previous);
   const nav = changeNav.value;
   if (!view) {
-    return <div class="ctm-footer-status">Loading…</div>;
+    return <div class="ftm-footer-status">Loading…</div>;
   }
   if (view.content.kind !== 'text') {
     return (
-      <div class="ctm-footer-status">
+      <div class="ftm-footer-status">
         {view.content.kind === 'missing' ? 'File absent at this revision' : view.content.kind}
       </div>
     );
@@ -248,7 +248,7 @@ function ActiveStatus({
     }
   }
   return (
-    <div class="ctm-footer-status" role="status">
+    <div class="ftm-footer-status" role="status">
       <span>{view.content.lines.length} lines</span>
       <span aria-hidden="true">·</span>
       <span>{view.content.eol}</span>
@@ -256,26 +256,26 @@ function ActiveStatus({
         <>
           <span aria-hidden="true">·</span>
           <span>
-            vs previous: <span class="ctm-stat-add">+{added}</span>{' '}
-            <span class="ctm-stat-del">−{removed}</span>
+            vs previous: <span class="ftm-stat-add">+{added}</span>{' '}
+            <span class="ftm-stat-del">−{removed}</span>
           </span>
           {nav && nav.total > 0 ? (
-            <span class="ctm-change-nav" role="group" aria-label="Change blocks">
+            <span class="ftm-change-nav" role="group" aria-label="Change blocks">
               <button
                 type="button"
-                class="ctm-icon-button ctm-change-button"
+                class="ftm-icon-button ftm-change-button"
                 title="Previous change (P, Shift+F7)"
                 aria-label="Previous change"
                 onClick={() => jumpToChange(getCodeView(revision.id), -1)}
               >
                 <span class="codicon codicon-arrow-up" aria-hidden="true" />
               </button>
-              <span class="ctm-change-count" aria-live="polite">
+              <span class="ftm-change-count" aria-live="polite">
                 {nav.current}/{nav.total} {nav.total === 1 ? 'change' : 'changes'}
               </span>
               <button
                 type="button"
-                class="ctm-icon-button ctm-change-button"
+                class="ftm-icon-button ftm-change-button"
                 title="Next change (N, F7)"
                 aria-label="Next change"
                 onClick={() => jumpToChange(getCodeView(revision.id), 1)}
@@ -294,7 +294,7 @@ function ActiveStatus({
       {gap ? (
         <>
           <span aria-hidden="true">·</span>
-          <span class="ctm-footer-gap" title={gap.title}>
+          <span class="ftm-footer-gap" title={gap.title}>
             <span class="codicon codicon-history" aria-hidden="true" /> {gap.text}
           </span>
         </>

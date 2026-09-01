@@ -13,7 +13,7 @@ are not replicating GitLens or the Source Control view.
 
 ## Next phase (recommended): Selection History
 
-`Visual Git History: Open Selection History` — select a function or block, and travel through
+`File Time Machine: Open Selection History` — select a function or block, and travel through
 the commits that touched **those lines** (`git log -L <start>,<end>:<path>`). The session,
 protocol and deck are already agnostic of _why_ a set of revisions is listed; the work is a
 history provider that parses `-L` output (which embeds diffs) and a way to keep the anchor on the

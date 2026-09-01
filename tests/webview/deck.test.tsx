@@ -22,7 +22,7 @@ const ids = ['r0', 'r1', 'r2', 'r3', 'r4', 'r5'];
 
 function offsetsByCard(container: HTMLElement): Record<string, string> {
   const out: Record<string, string> = {};
-  for (const card of container.querySelectorAll<HTMLElement>('.ctm-card')) {
+  for (const card of container.querySelectorAll<HTMLElement>('.ftm-card')) {
     out[card.getAttribute('aria-label')?.split(':')[0]?.replace('Revision ', '') ?? '?'] =
       card.dataset['slot'] ?? '';
   }
@@ -48,9 +48,9 @@ describe('RevisionDeck', () => {
       r2: '2',
       r3: 'hidden-older',
     });
-    const active = container.querySelector('.ctm-card-active');
+    const active = container.querySelector('.ftm-card-active');
     expect(active?.getAttribute('aria-hidden')).toBe('false');
-    expect(container.querySelectorAll('.ctm-card-background').length).toBe(3);
+    expect(container.querySelectorAll('.ftm-card-background').length).toBe(3);
   });
 
   it('shifts slots when the active revision changes (same nodes, new offsets)', async () => {
@@ -72,11 +72,11 @@ describe('RevisionDeck', () => {
   it('activates a background card on click', async () => {
     const { container, findAllByRole, rerender } = render(<RevisionDeck />);
     await findAllByRole('article', { hidden: true });
-    const older = container.querySelector<HTMLElement>('.ctm-card[data-slot="1"]');
+    const older = container.querySelector<HTMLElement>('.ftm-card[data-slot="1"]');
     older?.click();
     rerender(<RevisionDeck />);
     await findAllByRole('article', { hidden: true });
-    expect(container.querySelector('.ctm-card-active')?.getAttribute('aria-label')).toContain('r1');
+    expect(container.querySelector('.ftm-card-active')?.getAttribute('aria-label')).toContain('r1');
   });
 
   it('maps offsets to slots', () => {

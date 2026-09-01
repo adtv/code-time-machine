@@ -12,11 +12,11 @@ export function CommitHeader({
   const isWorkingTree = revision.kind === 'workingTree';
   const shortHash = isWorkingTree ? 'Working Tree' : revision.id.slice(0, 8);
   return (
-    <header class="ctm-card-header">
-      <div class="ctm-card-line1">
+    <header class="ftm-card-header">
+      <div class="ftm-card-line1">
         <button
           type="button"
-          class={`ctm-hash ${isWorkingTree ? 'ctm-hash-wt' : ''}`}
+          class={`ftm-hash ${isWorkingTree ? 'ftm-hash-wt' : ''}`}
           title={isWorkingTree ? 'Uncommitted changes' : `Copy full hash ${revision.id}`}
           onClick={() =>
             isWorkingTree
@@ -30,29 +30,29 @@ export function CommitHeader({
           />
           {shortHash}
         </button>
-        <span class="ctm-subject" title={revision.body || revision.subject}>
+        <span class="ftm-subject" title={revision.body || revision.subject}>
           {revision.subject}
         </span>
         <Badges revision={revision} />
         <Stats revision={revision} />
         {actions}
       </div>
-      <div class="ctm-card-line2">
-        <span class="ctm-author" title={revision.author.name}>
+      <div class="ftm-card-line2">
+        <span class="ftm-author" title={revision.author.name}>
           {revision.author.name}
         </span>
-        <span class="ctm-dot" aria-hidden="true">
+        <span class="ftm-dot" aria-hidden="true">
           ·
         </span>
-        <time class="ctm-date" dateTime={new Date(revision.authorDate).toISOString()}>
+        <time class="ftm-date" dateTime={new Date(revision.authorDate).toISOString()}>
           {formatDate(revision.authorDate)}
         </time>
         {revision.path ? (
-          <span class="ctm-path-group">
-            <span class="ctm-dot" aria-hidden="true">
+          <span class="ftm-path-group">
+            <span class="ftm-dot" aria-hidden="true">
               ·
             </span>
-            <span class="ctm-path" title={revision.path}>
+            <span class="ftm-path" title={revision.path}>
               {revision.path}
             </span>
           </span>
@@ -92,9 +92,9 @@ function Badges({ revision }: { revision: RevisionMeta }) {
     return null;
   }
   return (
-    <span class="ctm-badges">
+    <span class="ftm-badges">
       {badges.map((b) => (
-        <span key={b.text} class="ctm-badge" title={b.title}>
+        <span key={b.text} class="ftm-badge" title={b.title}>
           {b.text}
         </span>
       ))}
@@ -108,15 +108,15 @@ function Stats({ revision }: { revision: RevisionMeta }) {
     return null;
   }
   if (stats.binary) {
-    return <span class="ctm-stats ctm-stats-binary">binary</span>;
+    return <span class="ftm-stats ftm-stats-binary">binary</span>;
   }
   return (
     <span
-      class="ctm-stats"
+      class="ftm-stats"
       aria-label={`${stats.additions} additions, ${stats.deletions} deletions`}
     >
-      <span class="ctm-stat-add">+{stats.additions}</span>{' '}
-      <span class="ctm-stat-del">−{stats.deletions}</span>
+      <span class="ftm-stat-add">+{stats.additions}</span>{' '}
+      <span class="ftm-stat-del">−{stats.deletions}</span>
     </span>
   );
 }

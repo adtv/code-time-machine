@@ -25,8 +25,8 @@ export class TestRepo {
 
   private constructor(readonly root: string) {}
 
-  static async create(name = 'ctm-test'): Promise<TestRepo> {
-    const base = process.env['CTM_TEST_TMP'] ?? tmpdir();
+  static async create(name = 'ftm-test'): Promise<TestRepo> {
+    const base = process.env['FTM_TEST_TMP'] ?? tmpdir();
     await mkdir(base, { recursive: true });
     const root = await mkdtemp(path.join(base, `${name}-`));
     const repo = new TestRepo(root);

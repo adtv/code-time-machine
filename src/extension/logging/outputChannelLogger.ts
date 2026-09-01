@@ -2,13 +2,13 @@ import * as vscode from 'vscode';
 import { formatError, type Logger } from './logger';
 
 /**
- * Logger backed by a VS Code LogOutputChannel ("Visual Git History"). The log level is managed
+ * Logger backed by a VS Code LogOutputChannel ("File Time Machine"). The log level is managed
  * by VS Code (Developer: Set Log Level…), so no extra setting is needed.
  */
 export class OutputChannelLogger implements Logger, vscode.Disposable {
   readonly channel: vscode.LogOutputChannel;
 
-  constructor(name = 'Visual Git History') {
+  constructor(name = 'File Time Machine') {
     this.channel = vscode.window.createOutputChannel(name, { log: true });
   }
 

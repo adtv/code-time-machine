@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.0 — 2026-09-01
+
+- **Renamed to File Time Machine.** The Marketplace requires a globally unique extension `name`
+  and `code-time-machine` was already taken, so the extension is now `adtv.file-time-machine`.
+- Internal identifiers unified under the new name: commands are `fileTimeMachine.*` (they were
+  `codeTimeMachine.*`), settings are `fileTimeMachine.*` (they were `visualGitHistory.*`),
+  the output channel is "File Time Machine" and the webview CSS prefix is `ftm-`.
+- **Breaking:** re-set any customised setting under the new `fileTimeMachine.*` prefix, and
+  update keybindings that referenced `codeTimeMachine.*` commands.
+
 ## 0.2.2 — 2026-09-01
 
 - Change counter fix: the current block is now the one whose clamped scroll target is closest to
@@ -22,7 +32,7 @@
 
 - Minimap on the active revision card (canvas): scaled code picture with token colours, added and
   removed lines tinted, slider for the visible region; click, drag and wheel to scroll. Setting
-  `visualGitHistory.showMinimap` and a toolbar toggle.
+  `fileTimeMachine.showMinimap` and a toolbar toggle.
 - Responsive layout: header/footer truncation with container queries, compact timeline with short
   sticky day labels on narrow panels; sticky day headers no longer let items show above them.
 
