@@ -22,6 +22,7 @@
     "file history",
     "visualization"
   ],
+  "icon": "media/icon.png",
   "main": "./dist/extension.js",
   "extensionDependencies": [
     "vscode.git"

@@ -38,6 +38,8 @@ export class HistoryPanel implements vscode.Disposable {
       retainContextWhenHidden: true,
       localResourceRoots: [vscode.Uri.joinPath(extensionUri, 'dist', 'webview')],
     });
+    // Same asset as the Marketplace icon, so the history tab is recognisable among editors.
+    this.panel.iconPath = vscode.Uri.joinPath(extensionUri, 'media', 'icon.png');
     this.panel.webview.html = this.renderHtml(title);
     this.disposables.push(
       this.panel.onDidDispose(() => this.dispose()),
