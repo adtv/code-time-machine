@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.2 — 2026-09-02
+
+- Marketplace listing: `repository`, `bugs` and `homepage` point at
+  https://github.com/adtv/code-time-machine, so the page links back to the repository, and the
+  README now embeds the demo GIF and the per-scene stills (vsce rewrites the relative paths to
+  absolute GitHub URLs, which only works once the repository is declared).
+- Demo recording: `npm run demo` drives the extension in a real VS Code window and encodes
+  `media/demo.gif` plus `media/screenshots/`.
+- CI fix: `pretest:extension` now builds the extension bundles, so the VS Code tests no longer
+  fail with "Cannot find module dist/extension.js" on a clean checkout.
+
 ## 0.3.1 — 2026-09-02
 
 - Extension icon (`media/icon.png`, 128×128): shown in the Marketplace and the Extensions view,
