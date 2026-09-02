@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1 — 2026-09-02
+
+- Extension icon (`media/icon.png`, 128×128): shown in the Marketplace and the Extensions view,
+  and reused as the icon of the history editor tab.
+
 ## 0.3.0 — 2026-09-01
 
 - **Renamed to File Time Machine.** The Marketplace requires a globally unique extension `name`
@@ -9,8 +14,6 @@
   the output channel is "File Time Machine" and the webview CSS prefix is `ftm-`.
 - **Breaking:** re-set any customised setting under the new `fileTimeMachine.*` prefix, and
   update keybindings that referenced `codeTimeMachine.*` commands.
-- Extension icon (`media/icon.png`, 128×128): shown in the Marketplace and the Extensions view,
-  and reused as the icon of the history editor tab.
 
 ## 0.2.2 — 2026-09-01
 
