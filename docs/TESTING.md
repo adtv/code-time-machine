@@ -3,6 +3,24 @@
 File Time Machine is verified at four levels plus a documented manual matrix. All automated
 suites must be green before a release (`npm run check && npm run test:extension`).
 
+## Demo recording
+
+`npm run demo` drives the extension in a real VS Code window (same CDP harness as the visual
+checks, `tests/extension/demo.test.ts`) and encodes `media/demo.gif` plus per-scene stills in
+`media/screenshots/`. Frames are captured at 2x and downscaled by ffmpeg so the code stays
+readable; the storyboard covers the deck, synchronized scrolling, time travel, the timeline,
+change navigation, ghost lines, a followed rename and the minimap.
+
+```
+npm run demo                          # capture + encode (needs ffmpeg and a display)
+npm run demo -- --encode              # re-encode the frames already captured
+npm run demo -- --width 800 --fps 10 --colors 128   # smaller file
+```
+
+Frames land in `.vscode-test/demo/` with a `frames.json` manifest (per-frame hold times). If the
+demo repository changes, the revision indices in the storyboard (`clickTimeline(n)`) may need
+adjusting — every beat logs the revision it landed on.
+
 ## Automated suites
 
 | Command                    | Runner                                    | What it covers                                                                                                                                                                                                                                                                                                                                                                      |

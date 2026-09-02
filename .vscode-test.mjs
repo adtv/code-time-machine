@@ -16,7 +16,7 @@ export default defineConfig({
     '--skip-welcome',
     '--skip-release-notes',
     // Visual harness: expose Chromium DevTools so tests can capture real screenshots.
-    ...(process.env.FTM_VISUAL === '1'
+    ...(process.env.FTM_VISUAL === '1' || process.env.FTM_DEMO === '1'
       ? [`--remote-debugging-port=${process.env.FTM_CDP_PORT ?? '9333'}`]
       : []),
   ],
@@ -24,5 +24,7 @@ export default defineConfig({
     ui: 'bdd',
     timeout: 60_000,
     color: true,
+    // The demo recorder needs the window to itself (no other suite opening/closing panels).
+    ...(process.env.FTM_DEMO === '1' ? { grep: 'demo recording' } : {}),
   },
 });

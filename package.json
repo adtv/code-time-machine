@@ -252,7 +252,8 @@
     "test:extension": "vscode-test",
     "check": "npm run lint && npm run typecheck && npm test && npm run build",
     "package": "vsce package --no-dependencies --allow-missing-repository",
-    "demo-repo": "node scripts/make-demo-repo.mjs"
+    "demo-repo": "node scripts/make-demo-repo.mjs",
+    "demo": "node scripts/record-demo.mjs"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

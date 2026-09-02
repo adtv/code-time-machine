@@ -8,8 +8,13 @@ front, the newer one peeks above, the older ones stack below. Scroll through tim
 logical region of the code** — even when 100 lines were added above it — thanks to a line-mapping
 engine. Added lines light up, removed lines linger as ghosts where they used to be.
 
-> Placeholder for the demo GIF: `docs/media/demo.gif` (deck travelling through
-> `UserService.ts`, showing synchronized scrolling and ghost lines).
+<!-- Marketplace images must resolve to absolute HTTPS URLs: vsce derives them from the
+     `repository` field, so the GIF below can only be embedded once this repo is published
+     (or when packaging with --baseImagesUrl). -->
+
+> **Demo:** `media/demo.gif` — the deck travelling through `UserService.ts` with synchronized
+> scrolling, change navigation, ghost lines and the rename being followed. Per-scene stills in
+> `media/screenshots/`. Both are recorded from the extension itself with `npm run demo`.
 
 ## Why
 

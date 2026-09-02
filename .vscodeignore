@@ -6,6 +6,10 @@ tests/**
 scripts/**
 docs/**
 out/**
+# Demo assets: the README cannot embed them without a public repository, so keep the
+# package small (they live in the repo, not in the .vsix).
+media/demo.gif
+media/screenshots/**
 node_modules/**
 coverage/**
 *.vsix
